@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KMJEnterprises – My Account</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#0f1111;--orange:#ff9900;--orange-dark:#e68a00;--blue:#007185;--red:#cc0c39;--green:#067d62;--bg:#eaeded;--white:#fff;--gray:#f3f3f3;--gray2:#ddd;--text:#0f1111;--muted:#565959;--radius:8px}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
+a{text-decoration:none;color:var(--blue)}
+button{cursor:pointer;font-family:inherit}
+
+/* TOPBAR */
+.topbar{background:var(--navy);padding:8px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100}
+.logo{font-family:'Sora',sans-serif;font-size:22px;font-weight:800;color:#fff;white-space:nowrap}
+.logo span{color:var(--orange)}
+.search-bar{flex:1;display:flex;border-radius:6px;overflow:hidden;height:38px;min-width:0}
+.search-select{background:#f0f0f0;border:none;padding:0 8px;font-size:12px;border-right:1px solid var(--gray2)}
+.search-input{flex:1;border:none;padding:0 12px;font-size:14px;outline:none}
+.search-btn{background:var(--orange);border:none;padding:0 14px;font-size:18px;color:var(--navy)}
+.topbar-actions{display:flex;gap:4px;align-items:center}
+.topbar-btn{color:#fff;padding:5px 8px;border:1px solid transparent;border-radius:4px;font-size:12px;background:none;cursor:pointer;white-space:nowrap;line-height:1.3}
+.topbar-btn:hover{border-color:#fff}
+.topbar-btn small{display:block;font-size:11px;color:#ccc}
+.cart-btn{display:flex;align-items:center;gap:5px;color:#fff;font-size:13px;font-weight:600;padding:5px 8px;border-radius:4px;border:1px solid transparent;background:none;cursor:pointer}
+.cart-btn:hover{border-color:#fff}
+.cart-count{background:var(--orange);color:var(--navy);font-weight:800;font-size:12px;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center}
+.navbar{background:#232f3e;padding:6px 16px;display:flex;gap:2px;overflow-x:auto}
+.navbar::-webkit-scrollbar{display:none}
+.navbar a{color:#fff;font-size:13px;padding:5px 10px;border-radius:4px;white-space:nowrap;border:1px solid transparent}
+.navbar a:hover{border-color:#fff}
+
+/* ACCOUNT HERO */
+.account-hero{background:linear-gradient(135deg,var(--navy) 0%,#1a2e45 100%);padding:28px 16px;color:#fff}
+.hero-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.avatar-large{width:80px;height:80px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-size:28px;font-weight:800;color:var(--navy);flex-shrink:0;border:3px solid rgba(255,255,255,.3)}
+.hero-info h2{font-family:'Sora',sans-serif;font-size:24px;font-weight:800;margin-bottom:4px}
+.hero-info p{color:rgba(255,255,255,.7);font-size:14px}
+.prime-badge-hero{display:inline-flex;align-items:center;gap:6px;background:rgba(0,168,224,.2);border:1px solid #00a8e0;border-radius:20px;padding:4px 12px;font-size:13px;color:#00a8e0;font-weight:600;margin-top:8px}
+.hero-stats{margin-left:auto;display:flex;gap:24px;flex-wrap:wrap}
+.hero-stat{text-align:center}
+.hero-stat-num{font-family:'Sora',sans-serif;font-size:28px;font-weight:800;color:var(--orange)}
+.hero-stat-label{font-size:12px;color:rgba(255,255,255,.6);margin-top:2px}
+
+/* LAYOUT */
+.account-layout{max-width:1200px;margin:0 auto;padding:20px 16px 40px;display:grid;grid-template-columns:220px 1fr;gap:16px;align-items:start}
+
+/* SIDEBAR NAV */
+.side-nav{background:var(--white);border-radius:var(--radius);overflow:hidden;position:sticky;top:70px}
+.side-nav-section{padding:8px 0}
+.side-nav-section+.side-nav-section{border-top:1px solid var(--gray2)}
+.side-nav-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;padding:6px 16px 4px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:14px;font-weight:500;cursor:pointer;transition:background .15s;border-left:3px solid transparent;color:var(--text)}
+.nav-item:hover{background:var(--gray)}
+.nav-item.active{background:#fff8e1;border-left-color:var(--orange);color:var(--orange);font-weight:600}
+.nav-icon{font-size:16px;width:20px;text-align:center}
+.nav-badge{margin-left:auto;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px}
+
+/* CONTENT PANELS */
+.panel{display:none}
+.panel.active{display:block}
+.panel-title{font-family:'Sora',sans-serif;font-size:20px;font-weight:700;margin-bottom:16px}
+
+/* CARDS */
+.card{background:var(--white);border-radius:var(--radius);padding:20px;margin-bottom:16px;border:1px solid var(--gray2)}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.card-title{font-family:'Sora',sans-serif;font-size:16px;font-weight:700}
+.edit-link{color:var(--blue);font-size:13px;cursor:pointer}
+.edit-link:hover{text-decoration:underline}
+
+/* QUICK LINKS */
+.quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.quick-card{background:var(--white);border-radius:var(--radius);padding:18px 14px;text-align:center;cursor:pointer;border:1px solid var(--gray2);transition:box-shadow .2s,border-color .2s}
+.quick-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.1);border-color:var(--orange)}
+.quick-icon{font-size:32px;margin-bottom:8px}
+.quick-label{font-size:13px;font-weight:600}
+.quick-sub{font-size:12px;color:var(--muted);margin-top:3px}
+
+/* ORDERS */
+.order-filters{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.order-filter-btn{background:var(--white);border:1px solid var(--gray2);border-radius:20px;padding:6px 14px;font-size:13px;transition:all .15s}
+.order-filter-btn:hover{border-color:var(--orange)}
+.order-filter-btn.active{background:var(--orange);border-color:var(--orange);color:var(--navy);font-weight:600}
+.order-search{flex:1;border:1px solid var(--gray2);border-radius:20px;padding:6px 14px;font-size:13px;outline:none;min-width:180px}
+.order-search:focus{border-color:var(--orange)}
+.order-card{background:var(--white);border-radius:var(--radius);border:1px solid var(--gray2);margin-bottom:12px;overflow:hidden;transition:box-shadow .2s}
+.order-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.order-card-header{background:var(--gray);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.order-meta{font-size:12px;color:var(--muted);display:flex;gap:20px;flex-wrap:wrap}
+.order-meta strong{color:var(--text);font-size:13px}
+.order-status{font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px}
+.status-delivered{background:#e8f5e9;color:var(--green)}
+.status-shipped{background:#e3f2fd;color:#1565c0}
+.status-processing{background:#fff8e1;color:#e65100}
+.status-cancelled{background:#ffebee;color:var(--red)}
+.order-items-row{padding:14px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.order-item-img{width:60px;height:60px;background:var(--gray);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+.order-item-name{font-size:13px;font-weight:500;margin-bottom:3px}
+.order-item-meta{font-size:12px;color:var(--muted)}
+.order-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.order-action-btn{background:var(--white);border:1px solid var(--gray2);border-radius:4px;padding:6px 12px;font-size:12px;font-weight:600;transition:background .15s}
+.order-action-btn:hover{background:var(--gray)}
+.order-action-btn.primary{background:var(--orange);border-color:var(--orange);color:var(--navy)}
+.order-action-btn.primary:hover{background:var(--orange-dark)}
+
+/* PROFILE FORM */
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group.span2{grid-column:span 2}
+.form-label{font-size:13px;font-weight:600}
+.form-input,.form-select{width:100%;border:1px solid var(--gray2);border-radius:4px;padding:9px 12px;font-size:14px;outline:none;transition:border-color .15s}
+.form-input:focus,.form-select:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(255,153,0,.15)}
+.save-btn{background:var(--orange);border:none;border-radius:4px;padding:9px 20px;font-size:14px;font-weight:600;color:var(--navy);font-family:'Sora',sans-serif;transition:background .15s}
+.save-btn:hover{background:var(--orange-dark)}
+
+/* ADDRESSES */
+.addr-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.addr-card{border:1px solid var(--gray2);border-radius:var(--radius);padding:16px;position:relative;transition:border-color .2s}
+.addr-card.default{border-color:var(--orange);background:#fff8e1}
+.addr-default-badge{position:absolute;top:10px;right:10px;background:var(--orange);color:var(--navy);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
+.addr-name{font-size:14px;font-weight:600;margin-bottom:6px}
+.addr-text{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:10px}
+.addr-actions{display:flex;gap:8px}
+.addr-btn{background:none;border:1px solid var(--gray2);border-radius:4px;padding:4px 12px;font-size:12px;transition:background .15s}
+.addr-btn:hover{background:var(--gray)}
+.addr-btn.danger:hover{background:#ffebee;border-color:var(--red);color:var(--red)}
+.add-addr-card{border:2px dashed var(--gray2);border-radius:var(--radius);padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:border-color .2s;gap:8px}
+.add-addr-card:hover{border-color:var(--blue)}
+.add-addr-card span{font-size:28px}
+.add-addr-card p{font-size:13px;color:var(--blue);font-weight:500}
+
+/* WISHLIST */
+.wishlist-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.wish-card{background:var(--white);border:1px solid var(--gray2);border-radius:var(--radius);padding:14px;cursor:pointer;transition:box-shadow .2s}
+.wish-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.1)}
+.wish-img{width:100%;height:100px;background:var(--gray);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:48px;margin-bottom:10px}
+.wish-name{font-size:13px;font-weight:500;margin-bottom:5px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.wish-price{font-family:'Sora',sans-serif;font-size:16px;font-weight:700;margin-bottom:8px}
+.wish-add-btn{width:100%;background:var(--orange);border:none;border-radius:20px;padding:6px;font-size:13px;font-weight:600;color:var(--navy)}
+.wish-add-btn:hover{background:var(--orange-dark)}
+.wish-remove{font-size:12px;color:var(--muted);text-align:center;margin-top:6px;cursor:pointer}
+.wish-remove:hover{color:var(--red)}
+
+/* PAYMENT CARDS */
+.payment-cards{display:flex;flex-direction:column;gap:10px}
+.payment-card-item{border:1px solid var(--gray2);border-radius:var(--radius);padding:14px 16px;display:flex;align-items:center;gap:14px}
+.card-chip{font-size:24px}
+.card-info{flex:1}
+.card-num{font-size:14px;font-weight:600;font-family:'Sora',sans-serif}
+.card-exp{font-size:12px;color:var(--muted)}
+.card-default-tag{background:var(--green);color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px}
+.card-actions{display:flex;gap:6px}
+.card-action-sm{background:none;border:1px solid var(--gray2);border-radius:4px;padding:4px 10px;font-size:12px}
+.card-action-sm:hover{background:var(--gray)}
+
+/* NOTIFICATIONS */
+.notif-list{display:flex;flex-direction:column;gap:8px}
+.notif-item{display:flex;gap:12px;padding:12px;background:var(--white);border-radius:6px;border:1px solid var(--gray2);cursor:pointer;transition:background .15s}
+.notif-item:hover{background:var(--gray)}
+.notif-item.unread{border-left:3px solid var(--orange);background:#fff8e1}
+.notif-icon{font-size:24px;flex-shrink:0}
+.notif-body{flex:1}
+.notif-title{font-size:13px;font-weight:600;margin-bottom:2px}
+.notif-sub{font-size:12px;color:var(--muted);line-height:1.4}
+.notif-time{font-size:11px;color:var(--muted);white-space:nowrap}
+
+/* SETTINGS TOGGLES */
+.settings-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--gray2)}
+.settings-row:last-child{border-bottom:none}
+.settings-info{}
+.settings-label{font-size:14px;font-weight:600;margin-bottom:2px}
+.settings-desc{font-size:12px;color:var(--muted)}
+.toggle{width:44px;height:24px;background:var(--gray2);border-radius:12px;position:relative;cursor:pointer;transition:background .2s;border:none;flex-shrink:0}
+.toggle.on{background:var(--green)}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle.on::after{transform:translateX(20px)}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#232f3e;color:#fff;padding:12px 24px;border-radius:24px;font-size:14px;z-index:300;transition:all .3s;opacity:0;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* FOOTER */
+footer{background:#232f3e;color:rgba(255,255,255,.8);padding:20px 16px 12px;margin-top:24px}
+.footer-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:16px}
+.footer-col h4{font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:#fff;margin-bottom:10px}
+.footer-col a{display:block;font-size:13px;color:rgba(255,255,255,.65);margin-bottom:6px}
+.footer-col a:hover{color:#fff;text-decoration:none}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:10px;text-align:center;font-size:12px;color:rgba(255,255,255,.35);max-width:1200px;margin:0 auto}
+
+@media(max-width:900px){.account-layout{grid-template-columns:1fr}.side-nav{position:static}.side-nav{display:flex;overflow-x:auto;border-radius:var(--radius)}.side-nav-section{display:flex;padding:4px}.side-nav-label{display:none}.nav-item{white-space:nowrap;border-left:none;border-bottom:3px solid transparent}.nav-item.active{border-left:none;border-bottom-color:var(--orange);background:#fff8e1}}
+@media(max-width:640px){.quick-grid{grid-template-columns:repeat(2,1fr)}.addr-grid{grid-template-columns:1fr}.wishlist-grid{grid-template-columns:repeat(2,1fr)}.profile-grid{grid-template-columns:1fr}.form-group.span2{grid-column:span 1}.footer-inner{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="logo"><a href="KMJ.html" style="color:inherit">KMJ<span>Enterprises</span></a></div>
+  <div class="search-bar">
+    <select class="search-select"><option>All</option><option>Electronics</option><option>Fashion</option></select>
+    <input class="search-input" type="text" placeholder="Search products, brands and more…" />
+    <button class="search-btn">🔍</button>
+  </div>
+  <div class="topbar-actions">
+    <button class="topbar-btn"><small>Hello, Rahul</small>Account ▾</button>
+    <button class="topbar-btn"><small>Returns</small>&amp; Orders</button>
+    <button class="cart-btn" onclick="location.href='checkout.html'">🛒 Cart <span class="cart-count">3</span></button>
+  </div>
+</header>
+<nav class="navbar">
+  <a href="KMJ.html">☰ All</a><a href="#">Today's Deals</a><a href="#">Electronics</a><a href="#">Fashion</a>
+  <a href="#">Home &amp; Kitchen</a><a href="#">Books</a><a href="#">Sports</a><a href="#">Beauty</a><a href="#">Prime</a>
+</nav>
+
+<!-- ACCOUNT HERO -->
+<div class="account-hero">
+  <div class="hero-inner">
+    <div class="avatar-large">RK</div>
+    <div class="hero-info">
+      <h2>Rahul Kumar</h2>
+      <p>rahul.kumar@gmail.com &nbsp;·&nbsp; Member since January 2021</p>
+      <div class="prime-badge-hero">✦ Prime Member</div>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-num">47</div><div class="hero-stat-label">Orders</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">12</div><div class="hero-stat-label">Wishlist</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">₹2.4L</div><div class="hero-stat-label">Total Spent</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">4.9★</div><div class="hero-stat-label">Avg Rating</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="account-layout">
+
+  <!-- SIDEBAR NAV -->
+  <div class="side-nav">
+    <div class="side-nav-section">
+      <div class="side-nav-label">Account</div>
+      <div class="nav-item active" onclick="switchPanel('overview')"><span class="nav-icon">🏠</span>Overview</div>
+      <div class="nav-item" onclick="switchPanel('orders')"><span class="nav-icon">📦</span>My Orders<span class="nav-badge">2</span></div>
+      <div class="nav-item" onclick="switchPanel('profile')"><span class="nav-icon">👤</span>Profile</div>
+      <div class="nav-item" onclick="switchPanel('addresses')"><span class="nav-icon">📍</span>Addresses</div>
+    </div>
+    <div class="side-nav-section">
+      <div class="side-nav-label">Shopping</div>
+      <div class="nav-item" onclick="switchPanel('wishlist')"><span class="nav-icon">❤️</span>Wishlist<span class="nav-badge" style="background:var(--orange);color:var(--navy)">12</span></div>
+      <div class="nav-item" onclick="switchPanel('payments')"><span class="nav-icon">💳</span>Payment Methods</div>
+      <div class="nav-item" onclick="switchPanel('prime')"><span class="nav-icon">✦</span>Prime Membership</div>
+    </div>
+    <div class="side-nav-section">
+      <div class="side-nav-label">Preferences</div>
+      <div class="nav-item" onclick="switchPanel('notifications')"><span class="nav-icon">🔔</span>Notifications</div>
+      <div class="nav-item" onclick="switchPanel('settings')"><span class="nav-icon">⚙️</span>Settings</div>
+      <div class="nav-item" onclick="location.href='login.html'" style="color:var(--red)"><span class="nav-icon">🚪</span>Sign Out</div>
+    </div>
+  </div>
+
+  <!-- PANELS -->
+  <div>
+
+    <!-- OVERVIEW -->
+    <div class="panel active" id="panel-overview">
+      <div class="panel-title">Account Overview</div>
+      <div class="quick-grid">
+        <div class="quick-card" onclick="switchPanel('orders')"><div class="quick-icon">📦</div><div class="quick-label">My Orders</div><div class="quick-sub">47 orders placed</div></div>
+        <div class="quick-card" onclick="switchPanel('wishlist')"><div class="quick-icon">❤️</div><div class="quick-label">Wishlist</div><div class="quick-sub">12 saved items</div></div>
+        <div class="quick-card" onclick="switchPanel('addresses')"><div class="quick-icon">📍</div><div class="quick-label">Addresses</div><div class="quick-sub">2 saved addresses</div></div>
+        <div class="quick-card" onclick="switchPanel('payments')"><div class="quick-icon">💳</div><div class="quick-label">Payment Methods</div><div class="quick-sub">2 saved cards</div></div>
+        <div class="quick-card" onclick="switchPanel('prime')"><div class="quick-icon">✦</div><div class="quick-label">Prime</div><div class="quick-sub">Renews Apr 28, 2026</div></div>
+        <div class="quick-card" onclick="switchPanel('notifications')"><div class="quick-icon">🔔</div><div class="quick-label">Notifications</div><div class="quick-sub">3 unread alerts</div></div>
+      </div>
+      <!-- RECENT ORDER -->
+      <div class="panel-title" style="font-size:18px;">Recent Order</div>
+      <div class="order-card">
+        <div class="order-card-header">
+          <div class="order-meta">
+            <span><strong>ORDER PLACED</strong><br>March 28, 2026</span>
+            <span><strong>TOTAL</strong><br>₹1,28,885</span>
+            <span><strong>SHIP TO</strong><br>Rahul Kumar</span>
+            <span><strong>ORDER #</strong><br>SN-2026-03284819</span>
+          </div>
+          <span class="order-status status-shipped">🚚 Out for Delivery</span>
+        </div>
+        <div class="order-items-row">
+          <div class="order-item-img">💻</div>
+          <div><div class="order-item-name">Apple MacBook Air M2 · Midnight · 512GB</div><div class="order-item-meta">Expected: Tomorrow, March 29 · ₹94,900</div></div>
+          <div class="order-actions">
+            <button class="order-action-btn primary" onclick="location.href='order-confirmation.html'">Track Package</button>
+            <button class="order-action-btn" onclick="showToast('Invoice downloaded!')">Invoice</button>
+            <button class="order-action-btn" onclick="showToast('Review page opening...')">Write Review</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORDERS -->
+    <div class="panel" id="panel-orders">
+      <div class="panel-title">My Orders</div>
+      <div class="order-filters">
+        <input class="order-search" type="text" placeholder="🔍 Search your orders…" />
+        <button class="order-filter-btn active" onclick="filterOrders(this)">All Orders</button>
+        <button class="order-filter-btn" onclick="filterOrders(this)">Delivered</button>
+        <button class="order-filter-btn" onclick="filterOrders(this)">In Transit</button>
+        <button class="order-filter-btn" onclick="filterOrders(this)">Returns</button>
+      </div>
+
+      <div class="order-card">
+        <div class="order-card-header">
+          <div class="order-meta">
+            <span><strong>ORDER PLACED</strong><br>28 Mar 2026</span>
+            <span><strong>TOTAL</strong><br>₹1,28,885</span>
+            <span><strong>ORDER #</strong><br>SN-2026-03284819</span>
+          </div>
+          <span class="order-status status-shipped">🚚 Out for Delivery</span>
+        </div>
+        <div class="order-items-row">
+          <div class="order-item-img">💻</div><div style="flex:1"><div class="order-item-name">Apple MacBook Air 15" M2 — Midnight 512GB</div><div class="order-item-meta">₹94,900 · Qty 1</div></div>
+          <div class="order-actions"><button class="order-action-btn primary" onclick="location.href='order-confirmation.html'">Track</button><button class="order-action-btn" onclick="showToast('Invoice PDF ready!')">Invoice</button></div>
+        </div>
+        <div class="order-items-row" style="padding-top:0">
+          <div class="order-item-img">🎧</div><div style="flex:1"><div class="order-item-name">Sony WH-1000XM5 Headphones — Black</div><div class="order-item-meta">₹24,990 · Qty 1</div></div>
+        </div>
+      </div>
+
+      <div class="order-card">
+        <div class="order-card-header">
+          <div class="order-meta">
+            <span><strong>ORDER PLACED</strong><br>12 Feb 2026</span>
+            <span><strong>TOTAL</strong><br>₹8,499</span>
+            <span><strong>ORDER #</strong><br>SN-2026-02124301</span>
+          </div>
+          <span class="order-status status-delivered">✔ Delivered</span>
+        </div>
+        <div class="order-items-row">
+          <div class="order-item-img">🔊</div><div style="flex:1"><div class="order-item-name">JBL Charge 5 Portable Bluetooth Speaker</div><div class="order-item-meta">₹8,499 · Qty 1 · Delivered Feb 14</div></div>
+          <div class="order-actions"><button class="order-action-btn" onclick="showToast('Buy again added to cart!')">Buy Again</button><button class="order-action-btn" onclick="showToast('Review submitted, thanks!')">Review</button><button class="order-action-btn" onclick="showToast('Return initiated!')">Return</button></div>
+        </div>
+      </div>
+
+      <div class="order-card">
+        <div class="order-card-header">
+          <div class="order-meta">
+            <span><strong>ORDER PLACED</strong><br>5 Jan 2026</span>
+            <span><strong>TOTAL</strong><br>₹2,799</span>
+            <span><strong>ORDER #</strong><br>SN-2026-01054122</span>
+          </div>
+          <span class="order-status status-delivered">✔ Delivered</span>
+        </div>
+        <div class="order-items-row">
+          <div class="order-item-img">👖</div><div style="flex:1"><div class="order-item-name">Levi's 511 Slim Fit Jeans — Dark Wash W32 L32</div><div class="order-item-meta">₹2,799 · Qty 1 · Delivered Jan 7</div></div>
+          <div class="order-actions"><button class="order-action-btn" onclick="showToast('Added to cart!')">Buy Again</button><button class="order-action-btn" onclick="showToast('Thanks for your review!')">Review</button></div>
+        </div>
+      </div>
+
+      <div class="order-card">
+        <div class="order-card-header">
+          <div class="order-meta">
+            <span><strong>ORDER PLACED</strong><br>20 Dec 2025</span>
+            <span><strong>TOTAL</strong><br>₹349</span>
+            <span><strong>ORDER #</strong><br>SN-2025-12206789</span>
+          </div>
+          <span class="order-status status-cancelled">✕ Cancelled</span>
+        </div>
+        <div class="order-items-row">
+          <div class="order-item-img">📗</div><div style="flex:1"><div class="order-item-name">Atomic Habits by James Clear — Hardcover</div><div class="order-item-meta">₹349 · Refunded on Dec 22</div></div>
+          <div class="order-actions"><button class="order-action-btn primary" onclick="showToast('Added to cart!')">Reorder</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="panel" id="panel-profile">
+      <div class="panel-title">Your Profile</div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Personal Information</div></div>
+        <div class="profile-grid">
+          <div class="form-group"><label class="form-label">First Name</label><input class="form-input" value="Rahul" /></div>
+          <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" value="Kumar" /></div>
+          <div class="form-group"><label class="form-label">Email</label><input class="form-input" value="rahul.kumar@gmail.com" /></div>
+          <div class="form-group"><label class="form-label">Mobile Number</label><input class="form-input" value="+91 98765 43210" /></div>
+          <div class="form-group"><label class="form-label">Date of Birth</label><input class="form-input" type="date" value="1995-06-15" /></div>
+          <div class="form-group"><label class="form-label">Gender</label><select class="form-select"><option>Male</option><option>Female</option><option>Prefer not to say</option></select></div>
+          <div class="form-group span2"><label class="form-label">Bio / Preferences</label><input class="form-input" value="Tech enthusiast, loves gadgets & books" /></div>
+        </div>
+        <div style="margin-top:16px;display:flex;gap:10px;">
+          <button class="save-btn" onclick="showToast('✅ Profile updated successfully!')">Save Changes</button>
+          <button style="background:var(--white);border:1px solid var(--gray2);border-radius:4px;padding:9px 16px;font-size:14px;">Cancel</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">🔒 Change Password</div></div>
+        <div class="profile-grid">
+          <div class="form-group"><label class="form-label">Current Password</label><input class="form-input" type="password" placeholder="••••••••" /></div>
+          <div class="form-group"><label class="form-label">New Password</label><input class="form-input" type="password" placeholder="Min 8 characters" /></div>
+          <div class="form-group span2"><label class="form-label">Confirm New Password</label><input class="form-input" type="password" placeholder="Re-enter new password" /></div>
+        </div>
+        <button class="save-btn" style="margin-top:16px" onclick="showToast('🔒 Password updated!')">Update Password</button>
+      </div>
+    </div>
+
+    <!-- ADDRESSES -->
+    <div class="panel" id="panel-addresses">
+      <div class="panel-title">Your Addresses</div>
+      <div class="addr-grid">
+        <div class="addr-card default">
+          <div class="addr-default-badge">Default</div>
+          <div class="addr-name">🏠 Rahul Kumar <span style="background:var(--navy);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:3px;margin-left:4px;">HOME</span></div>
+          <div class="addr-text">12, Anna Nagar, 3rd Street<br>Near Park View, Chennai<br>Tamil Nadu – 600 040<br>📱 98765 43210</div>
+          <div class="addr-actions">
+            <button class="addr-btn" onclick="showToast('Edit address page')">Edit</button>
+            <button class="addr-btn danger" onclick="showToast('Address removed')">Remove</button>
+          </div>
+        </div>
+        <div class="addr-card">
+          <div class="addr-name">🏢 Rahul Kumar <span style="background:var(--blue);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:3px;margin-left:4px;">WORK</span></div>
+          <div class="addr-text">Tidel Park, Block A, 5th Floor<br>Taramani, Chennai<br>Tamil Nadu – 600 113<br>📱 98765 43210</div>
+          <div class="addr-actions">
+            <button class="addr-btn" onclick="showToast('Set as default!')">Set Default</button>
+            <button class="addr-btn" onclick="showToast('Edit address')">Edit</button>
+            <button class="addr-btn danger" onclick="showToast('Address removed')">Remove</button>
+          </div>
+        </div>
+        <div class="add-addr-card" onclick="showToast('Add new address form opening...')">
+          <span>➕</span>
+          <p>Add a new address</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- WISHLIST -->
+    <div class="panel" id="panel-wishlist">
+      <div class="panel-title">Wishlist (12 items)</div>
+      <div class="wishlist-grid">
+        <div class="wish-card"><div class="wish-img">📱</div><div class="wish-name">Apple iPhone 15 Pro Max 256GB Natural Titanium</div><div class="wish-price">₹1,34,900</div><button class="wish-add-btn" onclick="showToast('Added to cart!')">Add to Cart</button><div class="wish-remove" onclick="showToast('Removed from wishlist')">Remove</div></div>
+        <div class="wish-card"><div class="wish-img">⌚</div><div class="wish-name">Apple Watch Series 9 GPS 45mm Midnight</div><div class="wish-price">₹41,900</div><button class="wish-add-btn" onclick="showToast('Added to cart!')">Add to Cart</button><div class="wish-remove" onclick="showToast('Removed from wishlist')">Remove</div></div>
+        <div class="wish-card"><div class="wish-img">🖥️</div><div class="wish-name">Samsung 27" 4K UHD IPS USB-C Monitor</div><div class="wish-price">₹32,490</div><button class="wish-add-btn" onclick="showToast('Added to cart!')">Add to Cart</button><div class="wish-remove" onclick="showToast('Removed from wishlist')">Remove</div></div>
+        <div class="wish-card"><div class="wish-img">📷</div><div class="wish-name">Sony Alpha ZV-E10 Mirrorless Camera 16-50mm</div><div class="wish-price">₹54,990</div><button class="wish-add-btn" onclick="showToast('Added to cart!')">Add to Cart</button><div class="wish-remove" onclick="showToast('Removed from wishlist')">Remove</div></div>
+        <div class="wish-card"><div class="wish-img">🎮</div><div class="wish-name">PlayStation 5 Console (Disc Edition)</div><div class="wish-price">₹54,990</div><button class="wish-add-btn" onclick="showToast('Added to cart!')">Add to Cart</button><div class="wish-remove" onclick="showToast('Removed from wishlist')">Remove</div></div>
+        <div class="wish-card"><div class="wish-img">🎧</div><div class="wish-name">Apple AirPods Pro (2nd Gen) MagSafe USB-C</div><div class="wish-price">₹24,900</div><button class="wish-add-btn" onclick="showToast('Added to cart!')">Add to Cart</button><div class="wish-remove" onclick="showToast('Removed from wishlist')">Remove</div></div>
+      </div>
+    </div>
+
+    <!-- PAYMENTS -->
+    <div class="panel" id="panel-payments">
+      <div class="panel-title">Payment Methods</div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:14px">Saved Cards</div>
+        <div class="payment-cards">
+          <div class="payment-card-item">
+            <div class="card-chip">💳</div>
+            <div class="card-info"><div class="card-num">HDFC Regalia •••• •••• •••• 4321</div><div class="card-exp">Expires 09/28 · Visa</div></div>
+            <span class="card-default-tag">Default</span>
+            <div class="card-actions"><button class="card-action-sm" onclick="showToast('Card edited')">Edit</button><button class="card-action-sm" style="color:var(--red)" onclick="showToast('Card removed')">Remove</button></div>
+          </div>
+          <div class="payment-card-item">
+            <div class="card-chip">💳</div>
+            <div class="card-info"><div class="card-num">SBI Debit •••• •••• •••• 8892</div><div class="card-exp">Expires 03/27 · Mastercard</div></div>
+            <div class="card-actions"><button class="card-action-sm" onclick="showToast('Set as default')">Set Default</button><button class="card-action-sm" style="color:var(--red)" onclick="showToast('Card removed')">Remove</button></div>
+          </div>
+        </div>
+        <button style="margin-top:14px;background:none;border:2px dashed var(--gray2);border-radius:6px;padding:10px 20px;font-size:14px;color:var(--blue);width:100%;" onclick="showToast('Add new card form')">+ Add New Card</button>
+      </div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:14px">ShopNova Pay Balance</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+          <div><div style="font-family:'Sora',sans-serif;font-size:32px;font-weight:800;color:var(--green)">₹2,450</div><div style="font-size:13px;color:var(--muted)">Available balance</div></div>
+          <div style="display:flex;gap:8px;"><button class="save-btn" onclick="showToast('Add money page')">Add Money</button><button style="background:var(--white);border:1px solid var(--gray2);border-radius:4px;padding:9px 16px;font-size:14px;" onclick="showToast('Transaction history')">History</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRIME -->
+    <div class="panel" id="panel-prime">
+      <div class="panel-title">Prime Membership</div>
+      <div class="card" style="background:linear-gradient(135deg,#0f1111,#1a2e45);color:#fff;border:none">
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+          <div style="font-size:48px">✦</div>
+          <div>
+            <div style="font-family:'Sora',sans-serif;font-size:22px;font-weight:800;color:#00a8e0;margin-bottom:4px;">ShopNova Prime</div>
+            <div style="font-size:14px;color:rgba(255,255,255,.8);">Active · Renews April 28, 2026</div>
+            <div style="font-size:13px;color:rgba(255,255,255,.6);margin-top:4px;">Annual Plan · ₹1,499 / year</div>
+          </div>
+          <div style="margin-left:auto;text-align:right;">
+            <div style="font-family:'Sora',sans-serif;font-size:28px;font-weight:800;color:var(--orange)">₹18,400</div>
+            <div style="font-size:12px;color:rgba(255,255,255,.6);">saved this year</div>
+          </div>
+        </div>
+      </div>
+      <div class="quick-grid">
+        <div class="quick-card"><div class="quick-icon">🚀</div><div class="quick-label">Free Fast Delivery</div><div class="quick-sub">Same-day & next-day</div></div>
+        <div class="quick-card"><div class="quick-icon">⚡</div><div class="quick-label">Early Access</div><div class="quick-sub">Sales & new arrivals</div></div>
+        <div class="quick-card"><div class="quick-icon">🎬</div><div class="quick-label">Nova Video</div><div class="quick-sub">Movies & web series</div></div>
+        <div class="quick-card"><div class="quick-icon">🎵</div><div class="quick-label">Nova Music</div><div class="quick-sub">100M+ songs, ad-free</div></div>
+        <div class="quick-card"><div class="quick-icon">📖</div><div class="quick-label">Nova Reading</div><div class="quick-sub">1000+ ebooks free</div></div>
+        <div class="quick-card"><div class="quick-icon">☁️</div><div class="quick-label">Nova Drive</div><div class="quick-sub">Unlimited photo storage</div></div>
+      </div>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    <div class="panel" id="panel-notifications">
+      <div class="panel-title">Notifications</div>
+      <div class="notif-list">
+        <div class="notif-item unread"><div class="notif-icon">🚚</div><div class="notif-body"><div class="notif-title">Your order is out for delivery!</div><div class="notif-sub">Order #SN-2026-03284819 — MacBook Air M2 will arrive today by 9 PM.</div></div><div class="notif-time">2h ago</div></div>
+        <div class="notif-item unread"><div class="notif-icon">⚡</div><div class="notif-body"><div class="notif-title">Flash Deal Alert: 70% off Sony Headphones</div><div class="notif-sub">An item on your wishlist is now on sale! Grab it before it's gone.</div></div><div class="notif-time">5h ago</div></div>
+        <div class="notif-item unread"><div class="notif-icon">💳</div><div class="notif-body"><div class="notif-title">Payment of ₹1,28,885 confirmed</div><div class="notif-sub">Your HDFC card ending 4321 was charged successfully.</div></div><div class="notif-time">Yesterday</div></div>
+        <div class="notif-item"><div class="notif-icon">⭐</div><div class="notif-body"><div class="notif-title">Rate your recent purchase</div><div class="notif-sub">How was the JBL Charge 5? Share your experience to help others.</div></div><div class="notif-time">3 days ago</div></div>
+        <div class="notif-item"><div class="notif-icon">🎁</div><div class="notif-body"><div class="notif-title">You have ₹200 cashback to redeem</div><div class="notif-sub">Your HDFC Bank cashback reward is ready. Use on your next order.</div></div><div class="notif-time">1 week ago</div></div>
+        <div class="notif-item"><div class="notif-icon">✦</div><div class="notif-body"><div class="notif-title">Prime renews in 30 days</div><div class="notif-sub">Your Prime membership renews on April 28 for ₹1,499.</div></div><div class="notif-time">1 week ago</div></div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="panel" id="panel-settings">
+      <div class="panel-title">Settings & Preferences</div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:4px">Notification Preferences</div>
+        <div class="settings-row"><div class="settings-info"><div class="settings-label">Order Updates</div><div class="settings-desc">Get notified about shipping and delivery</div></div><button class="toggle on" onclick="toggleBtn(this)"></button></div>
+        <div class="settings-row"><div class="settings-info"><div class="settings-label">Flash Deals & Offers</div><div class="settings-desc">Be first to know about discounts on your wishlist</div></div><button class="toggle on" onclick="toggleBtn(this)"></button></div>
+        <div class="settings-row"><div class="settings-info"><div class="settings-label">Price Drop Alerts</div><div class="settings-desc">Notify me when wishlist prices drop</div></div><button class="toggle on" onclick="toggleBtn(this)"></button></div>
+        <div class="settings-row"><div class="settings-info"><div class="settings-label">Promotional Emails</div><div class="settings-desc">Weekly newsletters and curated picks</div></div><button class="toggle" onclick="toggleBtn(this)"></button></div>
+        <div class="settings-row"><div class="settings-info"><div class="settings-label">SMS Notifications</div><div class="settings-desc">Order alerts via SMS</div></div><button class="toggle on" onclick="toggleBtn(this)"></button></div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:4px">Privacy & Security</div>
+        <div class="settings-row"><div class="settings-info"><div class="settings-label">Two-Factor Authentication</div><div class="settings-desc">Add extra security to your account</div></div><button class="toggle" onclick="toggleBtn(this)"></button></div>
+        <div class="settings-row"><div class="settings-info"><div class="settings-label">Personalized Recommendations</div><div class="settings-desc">Use browsing history to suggest products</div></div><button class="toggle on" onclick="toggleBtn(this)"></button></div>
+        <div class="settings-row"><div class="settings-info"><div class="settings-label">Share Data for Better Ads</div><div class="settings-desc">Allow interest-based advertising</div></div><button class="toggle" onclick="toggleBtn(this)"></button></div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:14px">Danger Zone</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button style="background:none;border:1px solid var(--red);color:var(--red);border-radius:4px;padding:9px 16px;font-size:14px;font-weight:600;" onclick="showToast('Account deactivation request sent')">Deactivate Account</button>
+          <button style="background:var(--red);border:none;color:#fff;border-radius:4px;padding:9px 16px;font-size:14px;font-weight:600;" onclick="showToast('Delete account — are you sure?')">Delete Account</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-col"><h4>Get to Know Us</h4><a href="#">About ShopNova</a><a href="#">Careers</a><a href="#">Press</a></div>
+    <div class="footer-col"><h4>Connect With Us</h4><a href="#">Facebook</a><a href="#">Twitter</a><a href="#">Instagram</a></div>
+    <div class="footer-col"><h4>Make Money With Us</h4><a href="#">Sell on ShopNova</a><a href="#">Advertise</a></div>
+    <div class="footer-col"><h4>Let Us Help You</h4><a href="#">Your Orders</a><a href="#">Returns</a><a href="#">Help</a></div>
+  </div>
+  <div class="footer-bottom">© 2026 ShopNova. All rights reserved.</div>
+</footer>
+
+<script>
+function switchPanel(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => { if (n.textContent.trim().toLowerCase().startsWith(id.slice(0,4))) n.classList.add('active'); });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function filterOrders(btn) {
+  document.querySelectorAll('.order-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  showToast('Showing ' + btn.textContent + ' orders');
+}
+function toggleBtn(btn) {
+  btn.classList.toggle('on');
+  showToast(btn.classList.contains('on') ? '✅ Setting enabled' : '❌ Setting disabled');
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
+</body>
+</html>

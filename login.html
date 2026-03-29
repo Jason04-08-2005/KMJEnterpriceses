@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KMJEnterprises – Sign In</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy: #0f1111; --orange: #ff9900; --orange-dark: #e68a00;
+  --blue: #007185; --red: #cc0c39; --green: #067d62;
+  --bg: #eaeded; --white: #fff; --gray: #f3f3f3; --gray2: #ddd;
+  --text: #0f1111; --muted: #565959; --radius: 8px;
+}
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+a { text-decoration: none; color: var(--blue); }
+a:hover { text-decoration: underline; }
+button { cursor: pointer; font-family: inherit; }
+input { font-family: inherit; }
+
+/* HEADER */
+.auth-header { background: var(--navy); padding: 12px 16px; display: flex; justify-content: center; align-items: center; }
+.logo { font-family: 'Sora', sans-serif; font-size: 26px; font-weight: 800; color: #fff; }
+.logo span { color: var(--orange); }
+
+/* MAIN */
+.auth-main { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 24px 16px 40px; }
+
+/* CARD */
+.auth-card { background: var(--white); border: 1px solid var(--gray2); border-radius: var(--radius); padding: 28px 28px; width: 100%; max-width: 380px; }
+.auth-card h1 { font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 20px; }
+
+/* TABS */
+.tabs { display: flex; border-bottom: 2px solid var(--gray2); margin-bottom: 22px; }
+.tab { flex: 1; padding: 10px; text-align: center; font-size: 14px; font-weight: 600; color: var(--muted); border-bottom: 3px solid transparent; margin-bottom: -2px; cursor: pointer; transition: all .2s; background: none; border-top: none; border-left: none; border-right: none; }
+.tab.active { color: var(--orange); border-bottom-color: var(--orange); }
+.tab:hover { color: var(--text); }
+
+/* FORMS */
+.form-panel { display: none; }
+.form-panel.active { display: block; }
+.form-group { margin-bottom: 14px; }
+.form-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: var(--text); }
+.form-input { width: 100%; border: 1px solid var(--gray2); border-radius: 4px; padding: 9px 12px; font-size: 14px; outline: none; transition: border-color .15s, box-shadow .15s; }
+.form-input:focus { border-color: #e77600; box-shadow: 0 0 0 3px rgba(231,118,0,.2); }
+.form-input.error { border-color: var(--red); }
+.form-hint { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.error-msg { font-size: 12px; color: var(--red); margin-top: 4px; display: none; }
+.error-msg.show { display: block; }
+.password-wrap { position: relative; }
+.password-wrap .toggle-pw { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 14px; color: var(--muted); cursor: pointer; padding: 4px; }
+
+/* SUBMIT BTN */
+.submit-btn { width: 100%; background: var(--orange); border: 1px solid #a88734; border-radius: 4px; padding: 10px; font-size: 14px; font-weight: 600; color: var(--navy); font-family: 'Sora', sans-serif; margin-top: 6px; transition: background .15s; }
+.submit-btn:hover { background: var(--orange-dark); }
+
+/* DIVIDER */
+.or-divider { display: flex; align-items: center; gap: 10px; margin: 18px 0; color: var(--muted); font-size: 12px; }
+.or-divider::before, .or-divider::after { content: ''; flex: 1; height: 1px; background: var(--gray2); }
+
+/* SOCIAL BTNS */
+.social-btn { width: 100%; background: var(--white); border: 1px solid var(--gray2); border-radius: 4px; padding: 9px; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 10px; transition: background .15s; }
+.social-btn:hover { background: var(--gray); }
+
+/* TERMS */
+.terms-text { font-size: 12px; color: var(--muted); margin-top: 14px; line-height: 1.5; text-align: center; }
+
+/* DIVIDER CARD */
+.divider-line { border: none; border-top: 1px solid var(--gray2); margin: 20px 0; }
+
+/* BOTTOM LINKS */
+.auth-bottom { width: 100%; max-width: 380px; margin-top: 16px; text-align: center; }
+.auth-bottom p { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+
+/* BENEFITS SECTION */
+.benefits { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; width: 100%; max-width: 800px; margin-top: 40px; }
+.benefit-card { background: var(--white); border-radius: var(--radius); padding: 20px 16px; text-align: center; border: 1px solid var(--gray2); }
+.benefit-icon { font-size: 36px; margin-bottom: 10px; }
+.benefit-title { font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+.benefit-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* FOOTER */
+footer { background: #232f3e; padding: 16px; margin-top: auto; }
+.footer-links { max-width: 600px; margin: 0 auto; display: flex; justify-content: center; flex-wrap: wrap; gap: 16px; margin-bottom: 10px; }
+.footer-links a { color: rgba(255,255,255,.65); font-size: 12px; }
+.footer-links a:hover { color: #fff; text-decoration: none; }
+.footer-bottom { text-align: center; font-size: 12px; color: rgba(255,255,255,.3); }
+
+/* SUCCESS OVERLAY */
+.success-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; align-items: center; justify-content: center; }
+.success-overlay.show { display: flex; }
+.success-box { background: var(--white); border-radius: 12px; padding: 40px 32px; text-align: center; max-width: 360px; width: 90%; animation: popIn .3s cubic-bezier(.4,0,.2,1); }
+@keyframes popIn { from { transform: scale(.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.success-icon { font-size: 64px; margin-bottom: 16px; }
+.success-box h2 { font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+.success-box p { font-size: 14px; color: var(--muted); margin-bottom: 20px; }
+.success-btn { background: var(--orange); border: none; border-radius: 6px; padding: 11px 28px; font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700; color: var(--navy); cursor: pointer; }
+
+/* STRENGTH BAR */
+.strength-bar { height: 4px; border-radius: 2px; margin-top: 6px; background: var(--gray2); overflow: hidden; }
+.strength-fill { height: 100%; border-radius: 2px; width: 0; transition: width .3s, background .3s; }
+.strength-label { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+@media (max-width: 600px) { .benefits { grid-template-columns: 1fr; } .auth-card { padding: 20px 16px; } }
+</style>
+</head>
+<body>
+
+<header class="auth-header">
+  <div class="logo"><a href="C:\claude\KMJ.html" style="color:inherit;text-decoration:none;">KMJ<span>Enterprises</span></a></div>
+</header>
+
+<main class="auth-main">
+
+  <div class="auth-card">
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('signin')">Sign In</button>
+      <button class="tab" onclick="switchTab('signup')">Create Account</button>
+    </div>
+
+    <!-- SIGN IN FORM -->
+    <div class="form-panel active" id="signinPanel">
+      <div class="form-group">
+        <label class="form-label">Email or Mobile Number</label>
+        <input class="form-input" id="signinEmail" type="text" placeholder="email@example.com" />
+        <div class="error-msg" id="signinEmailErr">Please enter a valid email or mobile number.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="password-wrap">
+          <input class="form-input" id="signinPw" type="password" placeholder="At least 6 characters" />
+          <button class="toggle-pw" onclick="togglePw('signinPw', this)">👁️</button>
+        </div>
+        <div class="error-msg" id="signinPwErr">Incorrect password. Please try again.</div>
+      </div>
+      <div style="text-align:right;margin-bottom:12px;"><a href="#" style="font-size:13px;">Forgot your password?</a></div>
+      <button class="submit-btn" onclick="doSignIn()">Sign In</button>
+      <div class="or-divider">or continue with</div>
+      <button class="social-btn"><span style="font-size:18px;">G</span> Continue with Google</button>
+      <button class="social-btn"><span style="font-size:18px;">📱</span> Continue with OTP</button>
+      <div class="terms-text">By signing in, you agree to KMJEnterprises's <a href="C:\claude\term&condition.html">Conditions of Use</a> and <a href="#">Privacy Notice</a>.</div>
+    </div>
+
+    <!-- SIGN UP FORM -->
+    <div class="form-panel" id="signupPanel">
+      <div class="form-group">
+        <label class="form-label">Your Name</label>
+        <input class="form-input" id="regName" type="text" placeholder="First and Last Name" />
+        <div class="error-msg" id="regNameErr">Please enter your name.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Mobile Number</label>
+        <input class="form-input" id="regPhone" type="tel" placeholder="+91 98765 43210" />
+        <div class="error-msg" id="regPhoneErr">Please enter a valid 10-digit mobile number.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input class="form-input" id="regEmail" type="email" placeholder="email@example.com" />
+        <div class="error-msg" id="regEmailErr">Please enter a valid email address.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="password-wrap">
+          <input class="form-input" id="regPw" type="password" placeholder="At least 8 characters" oninput="checkStrength(this.value)" />
+          <button class="toggle-pw" onclick="togglePw('regPw', this)">👁️</button>
+        </div>
+        <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+        <div class="strength-label" id="strengthLabel"></div>
+        <div class="error-msg" id="regPwErr">Password must be at least 8 characters.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Re-enter Password</label>
+        <div class="password-wrap">
+          <input class="form-input" id="regPwConfirm" type="password" placeholder="Confirm password" />
+          <button class="toggle-pw" onclick="togglePw('regPwConfirm', this)">👁️</button>
+        </div>
+        <div class="error-msg" id="regPwConfirmErr">Passwords do not match.</div>
+      </div>
+      <button class="submit-btn" onclick="doSignUp()">Create your KMJEnterprises account</button>
+      <div class="terms-text">By creating an account, you agree to KMJEnterprises's <a href="#">Conditions of Use</a> and <a href="#">Privacy Notice</a>.</div>
+    </div>
+  </div>
+
+  <div class="auth-bottom">
+    <p style="position:relative;display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px;">
+      <span style="flex:1;height:1px;background:var(--gray2);display:block;"></span>
+      New to KMJEnterprises?
+      <span style="flex:1;height:1px;background:var(--gray2);display:block;"></span>
+    </p>
+    <button onclick="switchTab('signup')" style="width:100%;max-width:380px;margin-top:10px;background:var(--white);border:1px solid var(--gray2);border-radius:4px;padding:9px;font-size:14px;font-weight:500;color:var(--text);">Create your KMJEnterprises account</button>
+  </div>
+
+  <!-- BENEFITS -->
+  <div class="benefits">
+    <div class="benefit-card">
+      <div class="benefit-icon">🚀</div>
+      <div class="benefit-title">Free Fast Delivery</div>
+      <div class="benefit-desc">Prime members enjoy FREE same-day and next-day delivery on millions of items.</div>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-icon">💰</div>
+      <div class="benefit-title">Exclusive Deals</div>
+      <div class="benefit-desc">Access member-only flash deals and early access to sales before anyone else.</div>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-icon">🔒</div>
+      <div class="benefit-title">100% Secure</div>
+      <div class="benefit-desc">Your data is encrypted and safe. Easy returns and full buyer protection guaranteed.</div>
+    </div>
+  </div>
+
+</main>
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-box">
+    <div class="success-icon" id="successIcon">🎉</div>
+    <h2 id="successTitle">Welcome to KMJEnterprises!</h2>
+    <p id="successMsg">You're now signed in. Let's go shopping!</p>
+    <button class="success-btn" onclick="location.href='KMJ.html'">Start Shopping</button>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-links">
+    <a href="#">Conditions of Use</a><a href="#">Privacy Notice</a><a href="#">Help</a>
+    <a href="#">Careers</a><a href="#">Press Releases</a><a href="#">Advertise</a>
+  </div>
+  <div class="footer-bottom">© 2026 KMJEnterprises. All rights reserved.</div>
+</footer>
+
+<script>
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', (i===0&&tab==='signin')||(i===1&&tab==='signup')));
+  document.getElementById('signinPanel').classList.toggle('active', tab==='signin');
+  document.getElementById('signupPanel').classList.toggle('active', tab==='signup');
+}
+
+function togglePw(id, btn) {
+  const inp = document.getElementById(id);
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  btn.textContent = inp.type === 'password' ? '👁️' : '🙈';
+}
+
+function checkStrength(val) {
+  const fill = document.getElementById('strengthFill');
+  const label = document.getElementById('strengthLabel');
+  let score = 0;
+  if (val.length >= 8) score++;
+  if (/[A-Z]/.test(val)) score++;
+  if (/[0-9]/.test(val)) score++;
+  if (/[^A-Za-z0-9]/.test(val)) score++;
+  const colors = ['#cc0c39','#ff9900','#067d62','#067d62'];
+  const labels = ['Weak','Fair','Good','Strong'];
+  fill.style.width = (score * 25) + '%';
+  fill.style.background = colors[score-1] || '#ddd';
+  label.textContent = score > 0 ? labels[score-1] : '';
+  label.style.color = colors[score-1] || '#ddd';
+}
+
+function showErr(id, show) {
+  const el = document.getElementById(id);
+  el && (show ? el.classList.add('show') : el.classList.remove('show'));
+}
+
+function doSignIn() {
+  const email = document.getElementById('signinEmail').value.trim();
+  const pw = document.getElementById('signinPw').value;
+  let ok = true;
+  showErr('signinEmailErr', !email);
+  showErr('signinPwErr', false);
+  if (!email) ok = false;
+  if (!pw) { showErr('signinPwErr', true); ok = false; }
+  if (ok) showSuccess('👋', 'Welcome back!', "You're signed in. Let's go shopping!");
+}
+
+function doSignUp() {
+  const name = document.getElementById('regName').value.trim();
+  const phone = document.getElementById('regPhone').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const pw = document.getElementById('regPw').value;
+  const pw2 = document.getElementById('regPwConfirm').value;
+  let ok = true;
+  showErr('regNameErr', !name); if (!name) ok = false;
+  showErr('regPhoneErr', phone.replace(/\D/g,'').length < 10); if (phone.replace(/\D/g,'').length < 10) ok = false;
+  showErr('regEmailErr', !email.includes('@')); if (!email.includes('@')) ok = false;
+  showErr('regPwErr', pw.length < 8); if (pw.length < 8) ok = false;
+  showErr('regPwConfirmErr', pw !== pw2); if (pw !== pw2) ok = false;
+  if (ok) showSuccess('🎉', 'Welcome to KMJEnterprises!', `Account created for ${name}. Start exploring!`);
+}
+
+function showSuccess(icon, title, msg) {
+  document.getElementById('successIcon').textContent = icon;
+  document.getElementById('successTitle').textContent = title;
+  document.getElementById('successMsg').textContent = msg;
+  document.getElementById('successOverlay').classList.add('show');
+}
+</script>
+</body>
+</html>

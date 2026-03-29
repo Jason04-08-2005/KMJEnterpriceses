@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KMJEnterprises – Checkout</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy: #0f1111; --orange: #ff9900; --orange-dark: #e68a00;
+  --blue: #007185; --red: #cc0c39; --green: #067d62;
+  --bg: #eaeded; --white: #fff; --gray: #f3f3f3; --gray2: #ddd;
+  --text: #0f1111; --muted: #565959; --radius: 8px;
+}
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); }
+a { text-decoration: none; color: var(--blue); }
+button { cursor: pointer; font-family: inherit; }
+input, select, textarea { font-family: inherit; }
+
+/* TOPBAR */
+.topbar { background: var(--navy); padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; }
+.logo { font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 800; color: #fff; }
+.logo span { color: var(--orange); }
+.logo a { color: inherit; }
+.topbar-secure { color: rgba(255,255,255,.6); font-size: 13px; display: flex; align-items: center; gap: 6px; }
+
+/* STEPS */
+.steps-bar { background: var(--white); border-bottom: 1px solid var(--gray2); padding: 14px 16px; }
+.steps { max-width: 900px; margin: 0 auto; display: flex; align-items: center; gap: 0; }
+.step { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--muted); flex: 1; }
+.step.active { color: var(--orange); }
+.step.done { color: var(--green); }
+.step-num { width: 26px; height: 26px; border-radius: 50%; border: 2px solid currentColor; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+.step.done .step-num { background: var(--green); border-color: var(--green); color: #fff; }
+.step.active .step-num { background: var(--orange); border-color: var(--orange); color: var(--navy); }
+.step-line { flex: 1; height: 2px; background: var(--gray2); margin: 0 4px; }
+.step-line.done { background: var(--green); }
+
+/* LAYOUT */
+.checkout-layout { max-width: 1100px; margin: 0 auto; padding: 20px 16px 40px; display: grid; grid-template-columns: 1fr 340px; gap: 20px; align-items: start; }
+
+/* SECTIONS */
+.checkout-section { background: var(--white); border-radius: var(--radius); margin-bottom: 16px; overflow: hidden; }
+.section-header { padding: 16px 20px; border-bottom: 1px solid var(--gray2); display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+.section-num { width: 28px; height: 28px; border-radius: 50%; background: var(--navy); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; margin-right: 10px; }
+.section-title { font-family: 'Sora', sans-serif; font-size: 17px; font-weight: 700; display: flex; align-items: center; }
+.section-edit { color: var(--blue); font-size: 13px; cursor: pointer; }
+.section-body { padding: 20px; }
+.section-body.hidden { display: none; }
+
+/* FORM GRID */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-grid.full { grid-template-columns: 1fr; }
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-group.span2 { grid-column: span 2; }
+.form-label { font-size: 13px; font-weight: 600; color: var(--text); }
+.form-input, .form-select { width: 100%; border: 1px solid var(--gray2); border-radius: 4px; padding: 9px 12px; font-size: 14px; outline: none; background: var(--white); transition: border-color .15s, box-shadow .15s; }
+.form-input:focus, .form-select:focus { border-color: #e77600; box-shadow: 0 0 0 3px rgba(231,118,0,.15); }
+.required { color: var(--red); }
+
+/* SAVED ADDRESS */
+.addr-options { display: flex; flex-direction: column; gap: 10px; }
+.addr-option { border: 2px solid var(--gray2); border-radius: 6px; padding: 14px; cursor: pointer; transition: border-color .15s; display: flex; align-items: flex-start; gap: 10px; }
+.addr-option.selected { border-color: var(--orange); background: #fff8e1; }
+.addr-radio { margin-top: 2px; accent-color: var(--orange); }
+.addr-label { font-size: 13px; line-height: 1.6; }
+.addr-label strong { font-size: 14px; }
+.addr-tag { display: inline-block; background: var(--navy); color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 3px; margin-left: 6px; vertical-align: middle; }
+.add-addr-btn { background: none; border: 2px dashed var(--gray2); border-radius: 6px; padding: 14px; font-size: 14px; color: var(--blue); width: 100%; text-align: left; transition: border-color .15s; margin-top: 4px; }
+.add-addr-btn:hover { border-color: var(--blue); }
+
+/* PAYMENT */
+.payment-options { display: flex; flex-direction: column; gap: 10px; }
+.pay-option { border: 2px solid var(--gray2); border-radius: 6px; padding: 14px 16px; cursor: pointer; transition: border-color .15s; }
+.pay-option.selected { border-color: var(--orange); background: #fff8e1; }
+.pay-option-header { display: flex; align-items: center; gap: 10px; }
+.pay-icon { font-size: 22px; }
+.pay-label { font-size: 14px; font-weight: 600; }
+.pay-sub { font-size: 12px; color: var(--muted); }
+.pay-detail { margin-top: 12px; display: none; }
+.pay-option.selected .pay-detail { display: block; }
+.card-row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; }
+
+/* CART ITEMS */
+.cart-items-list { display: flex; flex-direction: column; gap: 12px; }
+.cart-item { display: flex; gap: 12px; padding-bottom: 14px; border-bottom: 1px solid var(--gray2); }
+.cart-item:last-child { border-bottom: none; padding-bottom: 0; }
+.cart-item-img { width: 72px; height: 72px; background: var(--gray); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 36px; flex-shrink: 0; }
+.cart-item-info { flex: 1; min-width: 0; }
+.cart-item-name { font-size: 13px; font-weight: 500; line-height: 1.4; margin-bottom: 4px; }
+.cart-item-brand { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+.cart-item-price { font-size: 15px; font-weight: 700; }
+.cart-item-qty { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.prime-tag { font-size: 11px; color: #00a8e0; font-weight: 700; }
+.remove-link { font-size: 12px; color: var(--blue); cursor: pointer; margin-top: 4px; display: inline-block; }
+.remove-link:hover { text-decoration: underline; }
+
+/* ORDER SUMMARY */
+.order-summary { background: var(--white); border-radius: var(--radius); padding: 20px; position: sticky; top: 80px; }
+.summary-title { font-family: 'Sora', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 16px; }
+.summary-rows { margin-bottom: 16px; }
+.summary-row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; }
+.summary-row.bold { font-weight: 700; font-size: 16px; border-top: 1px solid var(--gray2); padding-top: 10px; margin-top: 4px; }
+.summary-row.green { color: var(--green); font-weight: 600; }
+.summary-row.free { color: var(--green); }
+.place-order-btn { width: 100%; background: var(--orange); border: none; border-radius: 24px; padding: 13px; font-family: 'Sora', sans-serif; font-size: 16px; font-weight: 700; color: var(--navy); transition: background .15s, transform .1s; margin-bottom: 10px; }
+.place-order-btn:hover { background: var(--orange-dark); transform: translateY(-1px); }
+.secure-note { text-align: center; font-size: 12px; color: var(--muted); display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 14px; }
+.coupon-row { display: flex; gap: 8px; margin-bottom: 14px; }
+.coupon-input { flex: 1; border: 1px solid var(--gray2); border-radius: 4px; padding: 8px 10px; font-size: 13px; outline: none; }
+.coupon-input:focus { border-color: var(--orange); }
+.coupon-btn { background: var(--gray); border: 1px solid var(--gray2); border-radius: 4px; padding: 8px 14px; font-size: 13px; font-weight: 600; transition: background .15s; }
+.coupon-btn:hover { background: var(--gray2); }
+.coupon-success { font-size: 12px; color: var(--green); margin-top: -10px; margin-bottom: 10px; display: none; }
+
+/* CONTINUE BTN */
+.continue-btn { width: 100%; background: var(--orange); border: none; border-radius: 4px; padding: 10px; font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700; color: var(--navy); margin-top: 14px; transition: background .15s; }
+.continue-btn:hover { background: var(--orange-dark); }
+
+/* FOOTER */
+footer { background: #232f3e; padding: 14px 16px; }
+.footer-links { max-width: 700px; margin: 0 auto; display: flex; justify-content: center; flex-wrap: wrap; gap: 16px; margin-bottom: 8px; }
+.footer-links a { color: rgba(255,255,255,.65); font-size: 12px; text-decoration: none; }
+.footer-links a:hover { color: #fff; }
+.footer-bottom { text-align: center; font-size: 12px; color: rgba(255,255,255,.35); }
+
+@media (max-width: 900px) { .checkout-layout { grid-template-columns: 1fr; } .order-summary { position: static; } }
+@media (max-width: 550px) { .form-grid { grid-template-columns: 1fr; } .form-group.span2 { grid-column: span 1; } .card-row { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logo"><a href="KMJ.html">KMJ<span>Enterprises</span></a></div>
+  <div class="topbar-secure">🔒 Secure Checkout</div>
+</header>
+
+<!-- STEPS -->
+<div class="steps-bar">
+  <div class="steps">
+    <div class="step done"><div class="step-num">✓</div><span>Cart</span></div>
+    <div class="step-line done"></div>
+    <div class="step active"><div class="step-num">2</div><span>Delivery</span></div>
+    <div class="step-line"></div>
+    <div class="step"><div class="step-num">3</div><span>Payment</span></div>
+    <div class="step-line"></div>
+    <div class="step"><div class="step-num">4</div><span>Review</span></div>
+  </div>
+</div>
+
+<!-- CHECKOUT LAYOUT -->
+<div class="checkout-layout">
+  <div>
+
+    <!-- SECTION 1: LOGIN -->
+    <div class="checkout-section">
+      <div class="section-header" onclick="toggleSection('loginBody')">
+        <div class="section-title"><div class="section-num">1</div>Sign In or Continue as Guest</div>
+        <span class="section-edit">Change</span>
+      </div>
+      <div class="section-body" id="loginBody">
+        <div style="display:flex;align-items:center;gap:12px;background:#e8f5e9;border-radius:6px;padding:12px 16px;margin-bottom:14px;">
+          <span style="font-size:22px;">👤</span>
+          <div>
+            <div style="font-size:14px;font-weight:600;">Rahul Kumar</div>
+            <div style="font-size:13px;color:var(--muted);">rahul.kumar@gmail.com</div>
+          </div>
+          <div style="margin-left:auto;background:var(--green);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;">Signed In</div>
+        </div>
+        <div style="text-align:center;font-size:13px;color:var(--muted);">Not Rahul? <a href="login.html">Sign in with a different account</a></div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: DELIVERY ADDRESS -->
+    <div class="checkout-section">
+      <div class="section-header" onclick="toggleSection('addrBody')">
+        <div class="section-title"><div class="section-num">2</div>Delivery Address</div>
+        <span class="section-edit">Edit</span>
+      </div>
+      <div class="section-body" id="addrBody">
+        <div class="addr-options">
+          <div class="addr-option selected" onclick="selectAddr(this)">
+            <input type="radio" class="addr-radio" checked />
+            <div class="addr-label">
+              <strong>Rahul Kumar</strong><span class="addr-tag">HOME</span><br>
+              12, Anna Nagar, 3rd Street, Near Park View<br>
+              Chennai, Tamil Nadu – 600 040<br>
+              Mobile: 98765 43210
+            </div>
+          </div>
+          <div class="addr-option" onclick="selectAddr(this)">
+            <input type="radio" class="addr-radio" />
+            <div class="addr-label">
+              <strong>Rahul Kumar</strong><span class="addr-tag" style="background:#007185;">WORK</span><br>
+              Tidel Park, Block A, 5th Floor<br>
+              Taramani, Chennai – 600 113<br>
+              Mobile: 98765 43210
+            </div>
+          </div>
+          <button class="add-addr-btn">+ Add a new delivery address</button>
+        </div>
+        <button class="continue-btn" onclick="goToPayment()">Continue to Payment</button>
+      </div>
+    </div>
+
+    <!-- SECTION 3: PAYMENT -->
+    <div class="checkout-section">
+      <div class="section-header" onclick="toggleSection('payBody')">
+        <div class="section-title"><div class="section-num">3</div>Payment Method</div>
+        <span class="section-edit">Edit</span>
+      </div>
+      <div class="section-body hidden" id="payBody">
+        <div class="payment-options">
+
+          <div class="pay-option selected" onclick="selectPay(this)">
+            <div class="pay-option-header">
+              <input type="radio" checked style="accent-color:var(--orange);" />
+              <span class="pay-icon">💳</span>
+              <div><div class="pay-label">Credit / Debit Card</div><div class="pay-sub">Visa, Mastercard, RuPay, Amex</div></div>
+            </div>
+            <div class="pay-detail">
+              <div class="card-row" style="margin-bottom:10px;">
+                <div class="form-group"><label class="form-label">Card Number</label><input class="form-input" placeholder="1234 5678 9012 3456" maxlength="19" oninput="fmtCard(this)" /></div>
+                <div class="form-group"><label class="form-label">Expiry</label><input class="form-input" placeholder="MM/YY" maxlength="5" /></div>
+                <div class="form-group"><label class="form-label">CVV</label><input class="form-input" placeholder="•••" maxlength="4" type="password" /></div>
+              </div>
+              <div class="form-group" style="margin-bottom:10px;"><label class="form-label">Name on Card</label><input class="form-input" placeholder="As printed on card" /></div>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;"><input type="checkbox" checked style="accent-color:var(--orange);" /> Save this card for future purchases</label>
+            </div>
+          </div>
+
+          <div class="pay-option" onclick="selectPay(this)">
+            <div class="pay-option-header">
+              <input type="radio" style="accent-color:var(--orange);" />
+              <span class="pay-icon">📱</span>
+              <div><div class="pay-label">UPI</div><div class="pay-sub">Google Pay, PhonePe, BHIM, Paytm</div></div>
+            </div>
+            <div class="pay-detail">
+              <div class="form-group"><label class="form-label">UPI ID</label><input class="form-input" placeholder="yourname@upi" /></div>
+              <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap;">
+                <div style="text-align:center;font-size:12px;cursor:pointer;"><div style="font-size:28px;margin-bottom:4px;">G</div>Google Pay</div>
+                <div style="text-align:center;font-size:12px;cursor:pointer;"><div style="font-size:28px;margin-bottom:4px;">📲</div>PhonePe</div>
+                <div style="text-align:center;font-size:12px;cursor:pointer;"><div style="font-size:28px;margin-bottom:4px;">💸</div>Paytm</div>
+                <div style="text-align:center;font-size:12px;cursor:pointer;"><div style="font-size:28px;margin-bottom:4px;">🏦</div>BHIM</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pay-option" onclick="selectPay(this)">
+            <div class="pay-option-header">
+              <input type="radio" style="accent-color:var(--orange);" />
+              <span class="pay-icon">🏦</span>
+              <div><div class="pay-label">Net Banking</div><div class="pay-sub">All major Indian banks</div></div>
+            </div>
+            <div class="pay-detail">
+              <div class="form-group"><label class="form-label">Select Bank</label>
+                <select class="form-select">
+                  <option>-- Select Your Bank --</option>
+                  <option>State Bank of India</option><option>HDFC Bank</option>
+                  <option>ICICI Bank</option><option>Axis Bank</option>
+                  <option>Kotak Mahindra Bank</option><option>Punjab National Bank</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="pay-option" onclick="selectPay(this)">
+            <div class="pay-option-header">
+              <input type="radio" style="accent-color:var(--orange);" />
+              <span class="pay-icon">💰</span>
+              <div><div class="pay-label">Cash on Delivery</div><div class="pay-sub">Pay when you receive your order</div></div>
+            </div>
+          </div>
+
+          <div class="pay-option" onclick="selectPay(this)">
+            <div class="pay-option-header">
+              <input type="radio" style="accent-color:var(--orange);" />
+              <span class="pay-icon">🎁</span>
+              <div><div class="pay-label">ShopNova Gift Card / Voucher</div><div class="pay-sub">Redeem your balance</div></div>
+            </div>
+          </div>
+        </div>
+        <button class="continue-btn" onclick="goToReview()">Review Your Order</button>
+      </div>
+    </div>
+
+    <!-- SECTION 4: REVIEW -->
+    <div class="checkout-section">
+      <div class="section-header" onclick="toggleSection('reviewBody')">
+        <div class="section-title"><div class="section-num">4</div>Review Items &amp; Place Order</div>
+      </div>
+      <div class="section-body hidden" id="reviewBody">
+        <div class="cart-items-list">
+          <div class="cart-item">
+            <div class="cart-item-img">💻</div>
+            <div class="cart-item-info">
+              <div class="cart-item-name">Apple MacBook Air 15-inch with M2 Chip — Midnight, 512GB</div>
+              <div class="cart-item-brand">by Apple</div>
+              <div class="prime-tag">✦ PRIME</div>
+              <div class="cart-item-price">₹94,900</div>
+              <div class="cart-item-qty">Qty: 1 &nbsp;·&nbsp; <strong style="color:var(--green);">In Stock</strong></div>
+              <div class="cart-item-qty">🚀 FREE delivery Tomorrow, 29 Mar</div>
+              <a class="remove-link">Remove</a>
+            </div>
+          </div>
+          <div class="cart-item">
+            <div class="cart-item-img">🎧</div>
+            <div class="cart-item-info">
+              <div class="cart-item-name">Sony WH-1000XM5 Noise Cancelling Headphones — Black</div>
+              <div class="cart-item-brand">by Sony</div>
+              <div class="prime-tag">✦ PRIME</div>
+              <div class="cart-item-price">₹24,990</div>
+              <div class="cart-item-qty">Qty: 1 &nbsp;·&nbsp; <strong style="color:var(--green);">In Stock</strong></div>
+              <div class="cart-item-qty">🚀 FREE delivery Tomorrow, 29 Mar</div>
+              <a class="remove-link">Remove</a>
+            </div>
+          </div>
+          <div class="cart-item">
+            <div class="cart-item-img">🖱️</div>
+            <div class="cart-item-info">
+              <div class="cart-item-name">Logitech MX Master 3S Wireless Mouse — Graphite</div>
+              <div class="cart-item-brand">by Logitech</div>
+              <div class="prime-tag">✦ PRIME</div>
+              <div class="cart-item-price">₹8,995</div>
+              <div class="cart-item-qty">Qty: 1 &nbsp;·&nbsp; <strong style="color:var(--green);">In Stock</strong></div>
+              <div class="cart-item-qty">🚀 FREE delivery Tomorrow, 29 Mar</div>
+              <a class="remove-link">Remove</a>
+            </div>
+          </div>
+        </div>
+        <div style="background:#e8f5e9;border-radius:6px;padding:12px 16px;margin-top:16px;font-size:13px;display:flex;align-items:flex-start;gap:8px;">
+          <span>🛡️</span>
+          <span>By placing your order, you agree to ShopNova's <a href="#">Conditions of Use</a> and <a href="#">Privacy Notice</a>. You also agree to buy this item as described.</span>
+        </div>
+        <button class="continue-btn" style="background:var(--orange);font-size:16px;padding:14px;border-radius:24px;margin-top:16px;" onclick="location.href='order-confirmation.html'">🛒 Place Your Order — ₹1,28,885</button>
+      </div>
+    </div>
+
+  </div><!-- end left col -->
+
+  <!-- ORDER SUMMARY -->
+  <div class="order-summary">
+    <div class="summary-title">Order Summary</div>
+    <div class="coupon-row">
+      <input class="coupon-input" id="couponInput" type="text" placeholder="Enter coupon code" />
+      <button class="coupon-btn" onclick="applyCoupon()">Apply</button>
+    </div>
+    <div class="coupon-success" id="couponSuccess">🎉 Coupon NOVA200 applied! You save ₹200.</div>
+    <div class="summary-rows">
+      <div class="summary-row"><span>Items (3)</span><span>₹1,28,885</span></div>
+      <div class="summary-row free"><span>Delivery</span><span>FREE</span></div>
+      <div class="summary-row green"><span>🏷️ Deal Savings</span><span>-₹38,500</span></div>
+      <div class="summary-row green" id="couponRow" style="display:none;"><span>Coupon (NOVA200)</span><span>-₹200</span></div>
+      <div class="summary-row"><span>Estimated Tax</span><span>Included</span></div>
+      <div class="summary-row bold"><span>Order Total</span><span id="orderTotal">₹1,28,885</span></div>
+    </div>
+    <div class="secure-note">🔒 Safe &amp; Secure Payments</div>
+    <button class="place-order-btn" onclick="location.href='order-confirmation.html'">Place Order</button>
+    <div style="font-size:12px;color:var(--muted);line-height:1.6;">
+      <div style="margin-bottom:6px;">✦ <strong>Prime FREE Delivery</strong> on all items</div>
+      <div style="margin-bottom:6px;">🔄 Easy 10-day returns</div>
+      <div>🛡️ 100% Purchase Protection</div>
+    </div>
+    <hr style="border:none;border-top:1px solid var(--gray2);margin:14px 0;" />
+    <div style="font-size:13px;font-weight:600;margin-bottom:10px;">Items in your order:</div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;gap:8px;font-size:12px;align-items:center;"><span style="font-size:22px;">💻</span><span>MacBook Air M2 × 1</span><span style="margin-left:auto;font-weight:600;">₹94,900</span></div>
+      <div style="display:flex;gap:8px;font-size:12px;align-items:center;"><span style="font-size:22px;">🎧</span><span>Sony XM5 × 1</span><span style="margin-left:auto;font-weight:600;">₹24,990</span></div>
+      <div style="display:flex;gap:8px;font-size:12px;align-items:center;"><span style="font-size:22px;">🖱️</span><span>Logitech MX3S × 1</span><span style="margin-left:auto;font-weight:600;">₹8,995</span></div>
+    </div>
+  </div>
+
+</div><!-- end checkout-layout -->
+
+<footer>
+  <div class="footer-links">
+    <a href="#">Conditions of Use</a><a href="#">Privacy Notice</a><a href="#">Help</a>
+    <a href="#">Cookies</a><a href="#">Interest-Based Ads</a>
+  </div>
+  <div class="footer-bottom">© 2026 ShopNova. All rights reserved.</div>
+</footer>
+
+<script>
+let step = 1;
+
+function toggleSection(id) {
+  const body = document.getElementById(id);
+  body.classList.toggle('hidden');
+}
+
+function selectAddr(el) {
+  document.querySelectorAll('.addr-option').forEach(o => { o.classList.remove('selected'); o.querySelector('input').checked = false; });
+  el.classList.add('selected');
+  el.querySelector('input').checked = true;
+}
+
+function selectPay(el) {
+  document.querySelectorAll('.pay-option').forEach(o => { o.classList.remove('selected'); o.querySelector('input[type=radio]').checked = false; });
+  el.classList.add('selected');
+  el.querySelector('input[type=radio]').checked = true;
+}
+
+function goToPayment() {
+  document.getElementById('addrBody').classList.add('hidden');
+  document.getElementById('payBody').classList.remove('hidden');
+  updateSteps(3);
+  document.getElementById('payBody').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function goToReview() {
+  document.getElementById('payBody').classList.add('hidden');
+  document.getElementById('reviewBody').classList.remove('hidden');
+  updateSteps(4);
+  document.getElementById('reviewBody').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function updateSteps(n) {
+  const steps = document.querySelectorAll('.step');
+  const lines = document.querySelectorAll('.step-line');
+  steps.forEach((s, i) => {
+    s.classList.remove('active', 'done');
+    if (i < n - 1) s.classList.add('done');
+    else if (i === n - 1) s.classList.add('active');
+  });
+  lines.forEach((l, i) => { l.classList.toggle('done', i < n - 1); });
+}
+
+function applyCoupon() {
+  const code = document.getElementById('couponInput').value.trim().toUpperCase();
+  const success = document.getElementById('couponSuccess');
+  const row = document.getElementById('couponRow');
+  if (code === 'NOVA200' || code === 'SAVE200') {
+    success.style.display = 'block';
+    row.style.display = 'flex';
+    document.getElementById('orderTotal').textContent = '₹1,28,685';
+  } else {
+    success.style.display = 'none';
+    success.textContent = '❌ Invalid coupon code.';
+    success.style.color = 'var(--red)';
+    success.style.display = 'block';
+    setTimeout(() => { success.style.display = 'none'; }, 2500);
+  }
+}
+
+function fmtCard(inp) {
+  let v = inp.value.replace(/\D/g, '').slice(0, 16);
+  inp.value = v.replace(/(.{4})/g, '$1 ').trim();
+}
+</script>
+</body>
+</html>

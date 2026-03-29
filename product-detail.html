@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KMJEnterprises – Product Detail</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy: #0f1111; --orange: #ff9900; --orange-dark: #e68a00;
+  --blue: #007185; --red: #cc0c39; --green: #067d62;
+  --bg: #eaeded; --white: #fff; --gray: #f3f3f3; --gray2: #ddd;
+  --text: #0f1111; --muted: #565959; --radius: 8px;
+}
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); }
+a { text-decoration: none; color: inherit; }
+button { cursor: pointer; font-family: inherit; }
+
+/* TOPBAR */
+.topbar { background: var(--navy); padding: 8px 16px; display: flex; align-items: center; gap: 10px; position: sticky; top: 0; z-index: 100; }
+.logo { font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 800; color: #fff; }
+.logo span { color: var(--orange); }
+.logo a { color: inherit; }
+.search-bar { flex: 1; display: flex; border-radius: 6px; overflow: hidden; height: 38px; min-width: 0; }
+.search-select { background: #f0f0f0; border: none; padding: 0 8px; font-size: 12px; color: var(--text); border-right: 1px solid var(--gray2); }
+.search-input { flex: 1; border: none; padding: 0 12px; font-size: 14px; outline: none; }
+.search-btn { background: var(--orange); border: none; padding: 0 14px; font-size: 18px; }
+.topbar-actions { display: flex; gap: 4px; align-items: center; }
+.topbar-btn { color: #fff; padding: 5px 8px; border: 1px solid transparent; border-radius: 4px; font-size: 12px; background: none; cursor: pointer; }
+.topbar-btn:hover { border-color: #fff; }
+.topbar-btn small { display: block; font-size: 11px; color: #ccc; }
+.cart-btn { display: flex; align-items: center; gap: 5px; color: #fff; font-size: 13px; font-weight: 600; padding: 5px 8px; border-radius: 4px; border: 1px solid transparent; background: none; cursor: pointer; }
+.cart-btn:hover { border-color: #fff; }
+.cart-count { background: var(--orange); color: var(--navy); font-weight: 800; font-size: 12px; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; }
+
+/* NAVBAR */
+.navbar { background: #232f3e; padding: 6px 16px; display: flex; gap: 2px; overflow-x: auto; }
+.navbar::-webkit-scrollbar { display: none; }
+.navbar a { color: #fff; font-size: 13px; padding: 5px 10px; border-radius: 4px; white-space: nowrap; border: 1px solid transparent; }
+.navbar a:hover { border-color: #fff; }
+
+/* BREADCRUMB */
+.breadcrumb { max-width: 1400px; margin: 0 auto; padding: 12px 16px; font-size: 13px; color: var(--blue); display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.breadcrumb span { color: var(--muted); }
+
+/* MAIN LAYOUT */
+.product-layout { max-width: 1400px; margin: 0 auto; padding: 0 16px 32px; display: grid; grid-template-columns: 420px 1fr 280px; gap: 20px; }
+
+/* LEFT: IMAGE PANEL */
+.image-panel { background: var(--white); border-radius: var(--radius); padding: 20px; position: sticky; top: 70px; height: fit-content; }
+.main-image { width: 100%; aspect-ratio: 1; background: var(--gray); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 140px; margin-bottom: 14px; transition: transform .3s; cursor: zoom-in; }
+.main-image:hover { transform: scale(1.03); }
+.thumbs { display: flex; gap: 10px; justify-content: center; }
+.thumb { width: 58px; height: 58px; border-radius: 6px; background: var(--gray); display: flex; align-items: center; justify-content: center; font-size: 26px; border: 2px solid transparent; cursor: pointer; transition: border-color .15s; }
+.thumb.active { border-color: var(--orange); }
+.thumb:hover { border-color: var(--orange-dark); }
+.share-row { display: flex; gap: 8px; margin-top: 14px; justify-content: center; }
+.share-btn { background: var(--gray); border: none; border-radius: 20px; padding: 6px 14px; font-size: 12px; color: var(--muted); transition: background .15s; }
+.share-btn:hover { background: var(--gray2); }
+
+/* CENTER: PRODUCT INFO */
+.product-info { background: var(--white); border-radius: var(--radius); padding: 24px; }
+.brand-link { color: var(--blue); font-size: 13px; margin-bottom: 6px; display: inline-block; }
+.brand-link:hover { text-decoration: underline; }
+.product-title { font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 700; line-height: 1.3; margin-bottom: 10px; }
+.rating-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+.stars { color: var(--orange); font-size: 16px; letter-spacing: 1px; }
+.rating-num { color: var(--blue); font-size: 14px; font-weight: 500; }
+.rating-num:hover { text-decoration: underline; cursor: pointer; }
+.review-count { color: var(--blue); font-size: 13px; }
+.review-count:hover { text-decoration: underline; cursor: pointer; }
+.verified-badge { background: #e8f5e9; color: var(--green); font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
+.divider { border: none; border-top: 1px solid var(--gray2); margin: 16px 0; }
+.price-block { margin-bottom: 16px; }
+.deal-label { font-size: 13px; color: var(--red); font-weight: 600; margin-bottom: 4px; }
+.price-main { font-family: 'Sora', sans-serif; font-size: 32px; font-weight: 800; color: var(--text); }
+.price-main sup { font-size: 16px; vertical-align: super; }
+.price-orig-row { display: flex; gap: 10px; align-items: center; margin-top: 4px; }
+.price-orig { color: var(--muted); font-size: 14px; text-decoration: line-through; }
+.price-save-pct { background: var(--red); color: #fff; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
+.prime-box { background: #e8f4fd; border-radius: 6px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.prime-logo { font-size: 18px; font-weight: 800; color: #00a8e0; font-family: 'Sora', sans-serif; letter-spacing: -0.5px; }
+.prime-text { font-size: 13px; color: var(--blue); }
+.prime-text strong { font-weight: 600; }
+.offers-box { border: 1px solid var(--gray2); border-radius: 6px; padding: 14px; margin-bottom: 14px; }
+.offers-title { font-weight: 600; font-size: 14px; margin-bottom: 10px; }
+.offer-item { display: flex; gap: 8px; margin-bottom: 8px; font-size: 13px; line-height: 1.4; }
+.offer-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.colors-section { margin-bottom: 14px; }
+.colors-label { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+.color-options { display: flex; gap: 10px; flex-wrap: wrap; }
+.color-btn { border: 2px solid var(--gray2); border-radius: 6px; padding: 6px 14px; font-size: 13px; background: var(--white); transition: border-color .15s, background .15s; }
+.color-btn:hover { border-color: var(--orange); }
+.color-btn.active { border-color: var(--orange); background: var(--orange-light, #fff8e1); }
+.storage-section { margin-bottom: 14px; }
+.storage-label { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+.storage-options { display: flex; gap: 10px; flex-wrap: wrap; }
+.storage-btn { border: 1px solid var(--gray2); border-radius: 6px; padding: 8px 16px; font-size: 13px; background: var(--white); transition: all .15s; }
+.storage-btn:hover { border-color: var(--orange); }
+.storage-btn.active { border-color: var(--orange); background: #fff8e1; font-weight: 600; }
+.features-list { margin-top: 16px; }
+.features-title { font-size: 16px; font-weight: 700; font-family: 'Sora', sans-serif; margin-bottom: 10px; }
+.feature-item { display: flex; gap: 8px; font-size: 13px; margin-bottom: 7px; line-height: 1.5; color: var(--muted); }
+.feature-item::before { content: "•"; color: var(--orange); font-size: 18px; flex-shrink: 0; line-height: 1.2; }
+
+/* REVIEWS */
+.reviews-section { background: var(--white); border-radius: var(--radius); padding: 24px; margin-top: 16px; max-width: 1400px; margin-left: auto; margin-right: auto; margin-bottom: 20px; }
+.reviews-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+.reviews-title { font-family: 'Sora', sans-serif; font-size: 20px; font-weight: 700; }
+.overall-rating { display: flex; align-items: center; gap: 12px; }
+.big-rating { font-family: 'Sora', sans-serif; font-size: 52px; font-weight: 800; color: var(--text); line-height: 1; }
+.rating-meta { display: flex; flex-direction: column; gap: 2px; }
+.rating-bars { flex: 1; min-width: 200px; }
+.bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; font-size: 12px; }
+.bar-label { color: var(--blue); width: 36px; }
+.bar-track { flex: 1; background: var(--gray2); border-radius: 2px; height: 10px; overflow: hidden; }
+.bar-fill { background: var(--orange); height: 100%; border-radius: 2px; }
+.bar-pct { width: 32px; color: var(--muted); text-align: right; }
+.review-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 16px; }
+.review-card { border: 1px solid var(--gray2); border-radius: 8px; padding: 16px; }
+.reviewer-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.reviewer-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: #fff; flex-shrink: 0; }
+.reviewer-name { font-size: 14px; font-weight: 600; }
+.review-date { font-size: 12px; color: var(--muted); }
+.review-stars { color: var(--orange); font-size: 14px; margin-bottom: 6px; }
+.review-headline { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+.review-body { font-size: 13px; color: var(--muted); line-height: 1.5; }
+.review-helpful { margin-top: 10px; font-size: 12px; color: var(--muted); }
+
+/* RIGHT: BUY BOX */
+.buy-box { background: var(--white); border-radius: var(--radius); padding: 20px; position: sticky; top: 70px; height: fit-content; border: 1px solid var(--gray2); }
+.buy-price { font-family: 'Sora', sans-serif; font-size: 26px; font-weight: 800; margin-bottom: 4px; }
+.buy-price sup { font-size: 14px; }
+.buy-prime { color: #00a8e0; font-size: 13px; font-weight: 700; margin-bottom: 10px; }
+.delivery-box { background: var(--gray); border-radius: 6px; padding: 10px 12px; margin-bottom: 12px; font-size: 13px; line-height: 1.6; }
+.delivery-box strong { color: var(--green); }
+.stock-status { font-size: 16px; font-weight: 600; color: var(--green); margin-bottom: 12px; }
+.qty-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; font-size: 14px; }
+.qty-select { border: 1px solid var(--gray2); border-radius: 6px; padding: 6px 10px; font-size: 14px; background: var(--gray); }
+.buy-btn { width: 100%; background: var(--orange); border: none; border-radius: 24px; padding: 11px; font-size: 15px; font-weight: 700; color: var(--navy); font-family: 'Sora', sans-serif; margin-bottom: 10px; transition: background .15s, transform .1s; }
+.buy-btn:hover { background: var(--orange-dark); transform: translateY(-1px); }
+.buy-btn.secondary { background: #ffd814; }
+.buy-btn.secondary:hover { background: #f0c500; }
+.secure-row { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+.buy-meta { font-size: 12px; color: var(--muted); line-height: 1.7; }
+.buy-meta strong { color: var(--text); }
+
+/* TOAST */
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: #232f3e; color: #fff; padding: 12px 24px; border-radius: 24px; font-size: 14px; z-index: 300; transition: all .3s; opacity: 0; pointer-events: none; }
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+/* FOOTER */
+footer { background: #232f3e; color: rgba(255,255,255,.8); padding: 24px 16px 12px; margin-top: 24px; }
+.footer-inner { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 20px; }
+.footer-col h4 { font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 10px; }
+.footer-col a { display: block; font-size: 13px; color: rgba(255,255,255,.65); margin-bottom: 6px; }
+.footer-col a:hover { color: #fff; }
+.footer-bottom { border-top: 1px solid rgba(255,255,255,.1); padding-top: 12px; text-align: center; font-size: 12px; color: rgba(255,255,255,.4); max-width: 1400px; margin: 0 auto; }
+
+@media (max-width: 1100px) { .product-layout { grid-template-columns: 1fr 1fr; } .buy-box { position: static; } .image-panel { position: static; } }
+@media (max-width: 700px) { .product-layout { grid-template-columns: 1fr; } .review-cards { grid-template-columns: 1fr; } .footer-inner { grid-template-columns: repeat(2,1fr); } }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="logo"><a href="KMJ.html">KMJ<span>Enterprises</span></a></div>
+  <div class="search-bar">
+    <select class="search-select"><option>All</option><option>Electronics</option><option>Fashion</option><option>Books</option></select>
+    <input class="search-input" type="text" placeholder="Search products, brands and more…" />
+    <button class="search-btn">🔍</button>
+  </div>
+  <div class="topbar-actions">
+    <button class="topbar-btn" onclick="location.href='login.html'"><small>Hello, Sign in</small>Account ▾</button>
+    <button class="topbar-btn"><small>Returns</small>&amp; Orders</button>
+    <button class="cart-btn" onclick="location.href='checkout.html'">🛒 Cart <span class="cart-count">3</span></button>
+  </div>
+</header>
+<nav class="navbar">
+  <a href="shopnova.html">☰ All</a><a href="#">Today's Deals</a><a href="#">Electronics</a><a href="#">Fashion</a>
+  <a href="#">Home &amp; Kitchen</a><a href="#">Books</a><a href="#">Sports</a><a href="#">Beauty</a><a href="#">Prime</a>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <a href="shopnova.html">Home</a> <span>›</span>
+  <a href="#">Electronics</a> <span>›</span>
+  <a href="#">Laptops</a> <span>›</span>
+  <span style="color:var(--text)">Apple MacBook Air M2</span>
+</div>
+
+<!-- PRODUCT LAYOUT -->
+<div class="product-layout">
+
+  <!-- LEFT: IMAGES -->
+  <div class="image-panel">
+    <div class="main-image" id="mainImg">💻</div>
+    <div class="thumbs">
+      <div class="thumb active" onclick="selectThumb(this,'💻')">💻</div>
+      <div class="thumb" onclick="selectThumb(this,'🖥️')">🖥️</div>
+      <div class="thumb" onclick="selectThumb(this,'⌨️')">⌨️</div>
+      <div class="thumb" onclick="selectThumb(this,'🔌')">🔌</div>
+      <div class="thumb" onclick="selectThumb(this,'📦')">📦</div>
+    </div>
+    <div class="share-row">
+      <button class="share-btn">🔗 Share</button>
+      <button class="share-btn">♡ Wishlist</button>
+      <button class="share-btn">⚖️ Compare</button>
+    </div>
+  </div>
+
+  <!-- CENTER: INFO -->
+  <div>
+    <div class="product-info">
+      <a class="brand-link" href="#">Visit the Apple Store</a>
+      <div class="product-title">Apple MacBook Air 15-inch Laptop with M2 Chip: 8GB RAM, 512GB SSD Storage — Midnight</div>
+      <div class="rating-row">
+        <span class="stars">★★★★★</span>
+        <span class="rating-num">4.8</span>
+        <span class="review-count">12,840 ratings</span>
+        <span class="verified-badge">✔ Amazon's Choice</span>
+      </div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:8px;">Brand: <strong style="color:var(--text)">Apple</strong> &nbsp;|&nbsp; Model: <strong style="color:var(--text)">MQKQ3HN/A</strong> &nbsp;|&nbsp; OS: <strong style="color:var(--text)">macOS Ventura</strong></div>
+      <hr class="divider">
+
+      <div class="price-block">
+        <div class="deal-label">🏷️ Limited Time Deal</div>
+        <div class="price-main"><sup>₹</sup><span id="displayPrice">94,900</span></div>
+        <div class="price-orig-row">
+          <span class="price-orig">M.R.P.: ₹1,19,900</span>
+          <span class="price-save-pct">Save 21%</span>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px;">Inclusive of all taxes</div>
+      </div>
+
+      <div class="prime-box">
+        <div class="prime-logo">✦ prime</div>
+        <div class="prime-text"><strong>FREE delivery</strong> Tomorrow, 29 Mar. Order within <strong>4 hrs 22 mins</strong></div>
+      </div>
+
+      <div class="offers-box">
+        <div class="offers-title">🎁 Available Offers</div>
+        <div class="offer-item"><span class="offer-icon">💳</span><span><strong>Bank Offer:</strong> 10% instant discount on HDFC Bank Credit Cards. Min spend ₹5,000. Max discount ₹1,500.</span></div>
+        <div class="offer-item"><span class="offer-icon">🔄</span><span><strong>Exchange Offer:</strong> Get up to ₹18,000 off on exchange. <a href="#" style="color:var(--blue)">Check offers</a></span></div>
+        <div class="offer-item"><span class="offer-icon">🛡️</span><span><strong>1 Year</strong> Warranty provided by the manufacturer from date of purchase.</span></div>
+      </div>
+
+      <div class="colors-section">
+        <div class="colors-label">Colour: <strong id="selectedColor">Midnight</strong></div>
+        <div class="color-options">
+          <button class="color-btn active" onclick="selectColor(this,'Midnight')">🖤 Midnight</button>
+          <button class="color-btn" onclick="selectColor(this,'Starlight')">🤍 Starlight</button>
+          <button class="color-btn" onclick="selectColor(this,'Space Grey')">🩶 Space Grey</button>
+          <button class="color-btn" onclick="selectColor(this,'Silver')">🔘 Silver</button>
+        </div>
+      </div>
+
+      <div class="storage-section">
+        <div class="storage-label">Storage: <strong id="selectedStorage">512GB SSD</strong></div>
+        <div class="storage-options">
+          <button class="storage-btn" onclick="selectStorage(this,'256GB SSD','84,900')">256GB — ₹84,900</button>
+          <button class="storage-btn active" onclick="selectStorage(this,'512GB SSD','94,900')">512GB — ₹94,900</button>
+          <button class="storage-btn" onclick="selectStorage(this,'1TB SSD','1,14,900')">1TB — ₹1,14,900</button>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="features-list">
+        <div class="features-title">About this item</div>
+        <div class="feature-item">Supercharged by the next-generation Apple M2 chip for up to 18 hours of battery life</div>
+        <div class="feature-item">15.3-inch Liquid Retina display with 500 nits brightness, P3 wide color, True Tone technology</div>
+        <div class="feature-item">8GB unified memory and 512GB SSD — incredibly fast for everyday tasks and creative workflows</div>
+        <div class="feature-item">1080p FaceTime HD camera with advanced image signal processor for crystal-clear video calls</div>
+        <div class="feature-item">MagSafe 3 charging, 2 Thunderbolt / USB 4 ports, headphone jack with high-impedance headphone support</div>
+        <div class="feature-item">Works seamlessly with iPhone, iPad, Apple Watch, and Apple TV for a unified ecosystem experience</div>
+      </div>
+    </div>
+
+    <!-- REVIEWS SECTION -->
+    <div class="reviews-section">
+      <div class="reviews-header">
+        <div class="reviews-title">Customer Reviews</div>
+        <div class="overall-rating">
+          <div class="big-rating">4.8</div>
+          <div class="rating-meta">
+            <div style="color:var(--orange);font-size:22px;">★★★★★</div>
+            <div style="font-size:13px;color:var(--muted);">12,840 global ratings</div>
+          </div>
+          <div class="rating-bars">
+            <div class="bar-row"><span class="bar-label">5 ★</span><div class="bar-track"><div class="bar-fill" style="width:78%"></div></div><span class="bar-pct">78%</span></div>
+            <div class="bar-row"><span class="bar-label">4 ★</span><div class="bar-track"><div class="bar-fill" style="width:14%"></div></div><span class="bar-pct">14%</span></div>
+            <div class="bar-row"><span class="bar-label">3 ★</span><div class="bar-track"><div class="bar-fill" style="width:5%"></div></div><span class="bar-pct">5%</span></div>
+            <div class="bar-row"><span class="bar-label">2 ★</span><div class="bar-track"><div class="bar-fill" style="width:2%"></div></div><span class="bar-pct">2%</span></div>
+            <div class="bar-row"><span class="bar-label">1 ★</span><div class="bar-track"><div class="bar-fill" style="width:1%"></div></div><span class="bar-pct">1%</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="review-cards">
+        <div class="review-card">
+          <div class="reviewer-row">
+            <div class="reviewer-avatar" style="background:#3d5afe;">RK</div>
+            <div><div class="reviewer-name">Rahul Kumar</div><div class="review-date">Verified Purchase · March 2025</div></div>
+          </div>
+          <div class="review-stars">★★★★★</div>
+          <div class="review-headline">Absolutely worth every rupee!</div>
+          <div class="review-body">The M2 chip is a beast — everything flies. Battery genuinely lasts all day. Build quality is premium as always from Apple. Midnight color looks stunning in person.</div>
+          <div class="review-helpful">👍 143 people found this helpful</div>
+        </div>
+        <div class="review-card">
+          <div class="reviewer-row">
+            <div class="reviewer-avatar" style="background:#e53935;">PS</div>
+            <div><div class="reviewer-name">Priya Sharma</div><div class="review-date">Verified Purchase · Feb 2025</div></div>
+          </div>
+          <div class="review-stars">★★★★★</div>
+          <div class="review-headline">Best laptop I've ever owned</div>
+          <div class="review-body">Switched from a Windows laptop and never looking back. The display is gorgeous, fan-less so completely silent, and macOS is a joy to use for creative work.</div>
+          <div class="review-helpful">👍 98 people found this helpful</div>
+        </div>
+        <div class="review-card">
+          <div class="reviewer-row">
+            <div class="reviewer-avatar" style="background:#388e3c;">AM</div>
+            <div><div class="reviewer-name">Arjun Menon</div><div class="review-date">Verified Purchase · Jan 2025</div></div>
+          </div>
+          <div class="review-stars">★★★★☆</div>
+          <div class="review-headline">Great machine, minor nitpicks</div>
+          <div class="review-body">Incredible performance and battery. Docking only happens on 2 ports which is limiting. But day-to-day use is flawless. Delivery was fast too.</div>
+          <div class="review-helpful">👍 67 people found this helpful</div>
+        </div>
+        <div class="review-card">
+          <div class="reviewer-row">
+            <div class="reviewer-avatar" style="background:#7b1fa2;">DV</div>
+            <div><div class="reviewer-name">Divya Venkat</div><div class="review-date">Verified Purchase · Dec 2024</div></div>
+          </div>
+          <div class="review-stars">★★★★★</div>
+          <div class="review-headline">College student's dream laptop</div>
+          <div class="review-body">Handles everything — Xcode, Figma, video editing, all while giving 15+ hours of battery. The bigger 15" screen makes coding and multitasking so much easier.</div>
+          <div class="review-helpful">👍 54 people found this helpful</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: BUY BOX -->
+  <div class="buy-box">
+    <div class="buy-price"><sup>₹</sup><span id="buyPrice">94,900</span></div>
+    <div class="buy-prime">✦ FREE Prime Delivery</div>
+    <div class="delivery-box">
+      <strong>FREE delivery Tomorrow, 29 Mar</strong><br>
+      Order within <strong>4 hrs 22 mins</strong><br>
+      <span style="color:var(--blue);font-size:12px;cursor:pointer;">📍 Deliver to Chennai 600001</span>
+    </div>
+    <div class="stock-status">✔ In Stock</div>
+    <div class="qty-row">
+      <label style="font-size:13px;font-weight:600;">Qty:</label>
+      <select class="qty-select"><option>1</option><option>2</option><option>3</option></select>
+    </div>
+    <button class="buy-btn" onclick="addedToCart()">Add to Cart</button>
+    <button class="buy-btn secondary" onclick="location.href='checkout.html'">Buy Now</button>
+    <div class="secure-row">🔒 Secure transaction</div>
+    <div class="buy-meta">
+      <strong>Ships from</strong> Amazon India<br>
+      <strong>Sold by</strong> Apple Authorised Seller<br>
+      <strong>Returns</strong> Eligible for return within 10 days<br>
+      <strong>Warranty</strong> 1 Year Apple India
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-col"><h4>Get to Know Us</h4><a href="#">About ShopNova</a><a href="#">Careers</a><a href="#">Press Releases</a></div>
+    <div class="footer-col"><h4>Connect With Us</h4><a href="#">Facebook</a><a href="#">Twitter</a><a href="#">Instagram</a></div>
+    <div class="footer-col"><h4>Make Money With Us</h4><a href="#">Sell on ShopNova</a><a href="#">Become an Affiliate</a></div>
+    <div class="footer-col"><h4>Let Us Help You</h4><a href="#">Your Account</a><a href="#">Your Orders</a><a href="#">Help</a></div>
+  </div>
+  <div class="footer-bottom">© 2026 ShopNova. All rights reserved.</div>
+</footer>
+
+<script>
+function selectThumb(el, emoji) {
+  document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('mainImg').textContent = emoji;
+}
+function selectColor(el, name) {
+  document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('selectedColor').textContent = name;
+}
+function selectStorage(el, label, price) {
+  document.querySelectorAll('.storage-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('selectedStorage').textContent = label;
+  document.getElementById('displayPrice').textContent = price;
+  document.getElementById('buyPrice').textContent = price;
+}
+function addedToCart() {
+  showToast('🛒 Apple MacBook Air M2 added to cart!');
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>

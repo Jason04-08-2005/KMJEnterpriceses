@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KMJEnterprises Seller Central</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#0f1111;--orange:#ff9900;--orange-dark:#e68a00;--blue:#007185;--red:#cc0c39;--green:#067d62;--bg:#f0f2f5;--white:#fff;--gray:#f3f3f3;--gray2:#e0e0e0;--text:#0f1111;--muted:#6b7280;--radius:10px;--sidebar:240px}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;min-height:100vh}
+button{cursor:pointer;font-family:inherit}
+
+/* SELLER TOPBAR */
+.seller-topbar{background:var(--navy);padding:10px 20px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100}
+.seller-logo{font-family:'Sora',sans-serif;font-size:18px;font-weight:800;color:#fff;white-space:nowrap}
+.seller-logo span{color:var(--orange)}
+.seller-logo sub{font-size:11px;font-weight:500;color:rgba(255,255,255,.6);display:block;margin-top:-2px}
+.topbar-divider{width:1px;height:24px;background:rgba(255,255,255,.2)}
+.seller-info{color:rgba(255,255,255,.8);font-size:13px}
+.seller-info strong{color:#fff}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.notif-btn{position:relative;background:none;border:1px solid rgba(255,255,255,.3);border-radius:6px;padding:6px 10px;color:#fff;font-size:14px}
+.notif-btn:hover{border-color:#fff}
+.notif-dot{position:absolute;top:4px;right:4px;width:8px;height:8px;background:var(--red);border-radius:50%;border:2px solid var(--navy)}
+.topbar-avatar{width:34px;height:34px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:var(--navy);cursor:pointer}
+.view-store-btn{background:none;border:1px solid rgba(255,255,255,.4);border-radius:6px;padding:6px 12px;font-size:13px;color:#fff}
+.view-store-btn:hover{border-color:#fff;background:rgba(255,255,255,.1)}
+
+/* APP LAYOUT */
+.app-layout{display:flex;flex:1}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar);background:var(--white);border-right:1px solid var(--gray2);position:sticky;top:54px;height:calc(100vh - 54px);overflow-y:auto;flex-shrink:0}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--gray2);border-radius:2px}
+.sidebar-section{padding:6px 0}
+.sidebar-section+.sidebar-section{border-top:1px solid var(--gray2)}
+.sidebar-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;padding:8px 16px 4px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:13px;font-weight:500;cursor:pointer;transition:background .15s;border-left:3px solid transparent;color:var(--text)}
+.nav-item:hover{background:var(--gray)}
+.nav-item.active{background:#fff8e1;border-left-color:var(--orange);color:var(--orange);font-weight:600}
+.nav-icon{font-size:15px;width:18px;text-align:center}
+.nav-badge{margin-left:auto;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:20px}
+.nav-badge.orange{background:var(--orange);color:var(--navy)}
+
+/* MAIN CONTENT */
+.main-content{flex:1;padding:20px;min-width:0;overflow-x:hidden}
+
+/* PANELS */
+.panel{display:none}
+.panel.active{display:block}
+
+/* PAGE HEADER */
+.page-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.page-title{font-family:'Sora',sans-serif;font-size:22px;font-weight:800}
+.page-sub{font-size:13px;color:var(--muted);margin-top:3px}
+.header-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{border:none;border-radius:6px;padding:9px 16px;font-size:13px;font-weight:600;font-family:'Sora',sans-serif;transition:all .15s;cursor:pointer}
+.btn-primary{background:var(--orange);color:var(--navy)}
+.btn-primary:hover{background:var(--orange-dark)}
+.btn-secondary{background:var(--white);border:1px solid var(--gray2);color:var(--text)}
+.btn-secondary:hover{background:var(--gray)}
+.btn-danger{background:var(--red);color:#fff}
+.btn-green{background:var(--green);color:#fff}
+
+/* METRIC CARDS */
+.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.metric-card{background:var(--white);border-radius:var(--radius);padding:18px;border:1px solid var(--gray2);position:relative;overflow:hidden}
+.metric-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;border-radius:4px 0 0 4px}
+.metric-card.green::before{background:var(--green)}
+.metric-card.orange::before{background:var(--orange)}
+.metric-card.blue::before{background:var(--blue)}
+.metric-card.red::before{background:var(--red)}
+.metric-icon{font-size:28px;margin-bottom:10px}
+.metric-label{font-size:12px;color:var(--muted);font-weight:500;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.metric-value{font-family:'Sora',sans-serif;font-size:28px;font-weight:800;line-height:1;margin-bottom:6px}
+.metric-change{font-size:12px;display:flex;align-items:center;gap:4px}
+.metric-change.up{color:var(--green)}
+.metric-change.down{color:var(--red)}
+
+/* CHART AREA */
+.charts-row{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:20px}
+.chart-card{background:var(--white);border-radius:var(--radius);padding:18px;border:1px solid var(--gray2)}
+.chart-title{font-family:'Sora',sans-serif;font-size:15px;font-weight:700;margin-bottom:4px}
+.chart-sub{font-size:12px;color:var(--muted);margin-bottom:16px}
+.bar-chart{display:flex;align-items:flex-end;gap:6px;height:140px;padding-bottom:24px;position:relative}
+.bar-chart::after{content:'';position:absolute;bottom:24px;left:0;right:0;height:1px;background:var(--gray2)}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative}
+.bar{width:100%;border-radius:4px 4px 0 0;transition:opacity .2s;cursor:pointer;position:relative}
+.bar:hover{opacity:.8}
+.bar-label{font-size:10px;color:var(--muted);position:absolute;bottom:-20px;white-space:nowrap}
+.bar-val{font-size:9px;color:var(--muted);position:absolute;top:-16px;font-weight:600}
+.donut-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%}
+.donut-svg{margin-bottom:12px}
+.donut-legend{display:flex;flex-direction:column;gap:6px;width:100%}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:12px}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+/* TABLES */
+.table-card{background:var(--white);border-radius:var(--radius);border:1px solid var(--gray2);overflow:hidden;margin-bottom:16px}
+.table-header{padding:14px 18px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--gray2);flex-wrap:wrap;gap:8px}
+.table-title{font-family:'Sora',sans-serif;font-size:15px;font-weight:700}
+.table-search{border:1px solid var(--gray2);border-radius:6px;padding:6px 12px;font-size:13px;outline:none;min-width:180px}
+.table-search:focus{border-color:var(--orange)}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:10px 16px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;background:var(--gray);border-bottom:1px solid var(--gray2)}
+td{padding:12px 16px;font-size:13px;border-bottom:1px solid var(--gray2);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafafa}
+.status-pill{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
+.pill-green{background:#e8f5e9;color:var(--green)}
+.pill-orange{background:#fff3e0;color:#e65100}
+.pill-blue{background:#e3f2fd;color:#1565c0}
+.pill-red{background:#ffebee;color:var(--red)}
+.pill-gray{background:var(--gray);color:var(--muted)}
+.product-cell{display:flex;align-items:center;gap:10px}
+.product-cell-img{width:40px;height:40px;background:var(--gray);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.product-cell-name{font-size:13px;font-weight:500}
+.product-cell-sku{font-size:11px;color:var(--muted)}
+.action-btn-sm{background:none;border:1px solid var(--gray2);border-radius:4px;padding:3px 9px;font-size:12px;transition:background .15s}
+.action-btn-sm:hover{background:var(--gray)}
+.action-btn-sm.primary{background:var(--orange);border-color:var(--orange);color:var(--navy)}
+
+/* STOCK INDICATORS */
+.stock-bar{width:60px;height:6px;background:var(--gray2);border-radius:3px;overflow:hidden;display:inline-block;vertical-align:middle;margin-right:6px}
+.stock-fill{height:100%;border-radius:3px}
+
+/* ORDER STATUS FLOW */
+.order-flow{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.flow-item{flex:1;min-width:100px;background:var(--white);border-radius:var(--radius);padding:14px;text-align:center;border:1px solid var(--gray2);cursor:pointer;transition:border-color .2s}
+.flow-item:hover{border-color:var(--orange)}
+.flow-icon{font-size:24px;margin-bottom:6px}
+.flow-num{font-family:'Sora',sans-serif;font-size:24px;font-weight:800}
+.flow-label{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* ACTIVITY FEED */
+.activity-list{display:flex;flex-direction:column;gap:8px}
+.activity-item{display:flex;gap:12px;padding:12px;background:var(--white);border-radius:8px;border:1px solid var(--gray2)}
+.activity-icon{font-size:20px;flex-shrink:0}
+.activity-body{flex:1}
+.activity-title{font-size:13px;font-weight:600;margin-bottom:2px}
+.activity-sub{font-size:12px;color:var(--muted)}
+.activity-time{font-size:11px;color:var(--muted);white-space:nowrap}
+
+/* SETTINGS FORM */
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group.span2{grid-column:span 2}
+.form-label{font-size:13px;font-weight:600;color:var(--text)}
+.form-input,.form-select,.form-textarea{width:100%;border:1px solid var(--gray2);border-radius:6px;padding:9px 12px;font-size:14px;outline:none;font-family:inherit;transition:border-color .15s}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(255,153,0,.12)}
+.form-textarea{resize:vertical;min-height:80px}
+
+/* TOGGLE */
+.toggle-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--gray2)}
+.toggle-row:last-child{border-bottom:none}
+.toggle{width:44px;height:24px;background:var(--gray2);border-radius:12px;position:relative;cursor:pointer;transition:background .2s;border:none;flex-shrink:0}
+.toggle.on{background:var(--green)}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle.on::after{transform:translateX(20px)}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#232f3e;color:#fff;padding:12px 24px;border-radius:24px;font-size:14px;z-index:300;transition:all .3s;opacity:0;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+@media(max-width:1050px){.metrics-grid{grid-template-columns:repeat(2,1fr)}.charts-row{grid-template-columns:1fr}}
+@media(max-width:768px){.sidebar{display:none}.settings-grid{grid-template-columns:1fr}.form-group.span2{grid-column:span 1}}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="seller-topbar">
+  <div class="seller-logo">KMJ<span>Enterprises</span><sub>Seller Central</sub></div>
+  <div class="topbar-divider"></div>
+  <div class="seller-info"><strong>KMJEnterprises Pvt Ltd</strong> · Seller ID: SV-8821</div>
+  <div class="topbar-right">
+    <button class="view-store-btn" onclick="location.href='category.html'">👁️ View Store</button>
+    <button class="notif-btn" onclick="showToast('3 new notifications')">🔔<div class="notif-dot"></div></button>
+    <div class="topbar-avatar" onclick="showToast('Seller profile')">TZ</div>
+  </div>
+</header>
+
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Dashboard</div>
+      <div class="nav-item active" onclick="switchPanel('overview')"><span class="nav-icon">📊</span>Overview</div>
+      <div class="nav-item" onclick="switchPanel('orders')"><span class="nav-icon">📦</span>Orders<span class="nav-badge">12</span></div>
+      <div class="nav-item" onclick="switchPanel('inventory')"><span class="nav-icon">🗃️</span>Inventory<span class="nav-badge orange">3</span></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Store</div>
+      <div class="nav-item" onclick="switchPanel('products')"><span class="nav-icon">🏷️</span>Products</div>
+      <div class="nav-item" onclick="switchPanel('analytics')"><span class="nav-icon">📈</span>Analytics</div>
+      <div class="nav-item" onclick="switchPanel('reviews')"><span class="nav-icon">⭐</span>Reviews</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Finance</div>
+      <div class="nav-item" onclick="switchPanel('payments')"><span class="nav-icon">💰</span>Payments</div>
+      <div class="nav-item" onclick="switchPanel('reports')"><span class="nav-icon">📄</span>Reports</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Account</div>
+      <div class="nav-item" onclick="switchPanel('settings')"><span class="nav-icon">⚙️</span>Settings</div>
+      <div class="nav-item" onclick="location.href='login.html'" style="color:var(--red)"><span class="nav-icon">🚪</span>Sign Out</div>
+    </div>
+  </aside>
+
+  <!-- PANELS -->
+  <main class="main-content">
+
+    <!-- OVERVIEW -->
+    <div class="panel active" id="panel-overview">
+      <div class="page-header">
+        <div><div class="page-title">Good morning, KMJ 👋</div><div class="page-sub">Sunday, March 29, 2026 · Here's your store at a glance</div></div>
+        <div class="header-actions">
+          <button class="btn btn-secondary">📥 Export Report</button>
+          <button class="btn btn-primary" onclick="switchPanel('products')">+ Add Product</button>
+        </div>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-card green"><div class="metric-icon">💰</div><div class="metric-label">Revenue (This Month)</div><div class="metric-value">₹4,82,340</div><div class="metric-change up">↑ 18.4% vs last month</div></div>
+        <div class="metric-card orange"><div class="metric-icon">📦</div><div class="metric-label">Orders (This Month)</div><div class="metric-value">847</div><div class="metric-change up">↑ 12.2% vs last month</div></div>
+        <div class="metric-card blue"><div class="metric-icon">👁️</div><div class="metric-label">Product Views</div><div class="metric-value">28,430</div><div class="metric-change up">↑ 6.8% vs last week</div></div>
+        <div class="metric-card red"><div class="metric-icon">🔄</div><div class="metric-label">Return Rate</div><div class="metric-value">2.3%</div><div class="metric-change down">↑ 0.4% — review flagged items</div></div>
+      </div>
+
+      <div class="charts-row">
+        <div class="chart-card">
+          <div class="chart-title">Revenue (Last 7 Days)</div>
+          <div class="chart-sub">Daily revenue in ₹ thousands</div>
+          <div class="bar-chart" id="revenueChart"></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Sales by Category</div>
+          <div class="chart-sub">Breakdown of this month's GMV</div>
+          <div class="donut-wrap">
+            <svg class="donut-svg" width="120" height="120" viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="45" fill="none" stroke="#eee" stroke-width="18"/>
+              <circle cx="60" cy="60" r="45" fill="none" stroke="#ff9900" stroke-width="18" stroke-dasharray="127 156" stroke-dashoffset="0" transform="rotate(-90 60 60)"/>
+              <circle cx="60" cy="60" r="45" fill="none" stroke="#007185" stroke-width="18" stroke-dasharray="75 208" stroke-dashoffset="-127" transform="rotate(-90 60 60)"/>
+              <circle cx="60" cy="60" r="45" fill="none" stroke="#067d62" stroke-width="18" stroke-dasharray="45 238" stroke-dashoffset="-202" transform="rotate(-90 60 60)"/>
+              <circle cx="60" cy="60" r="45" fill="none" stroke="#ddd" stroke-width="18" stroke-dasharray="36 247" stroke-dashoffset="-247" transform="rotate(-90 60 60)"/>
+              <text x="60" y="56" text-anchor="middle" font-size="13" font-weight="800" font-family="Sora" fill="#0f1111">₹4.8L</text>
+              <text x="60" y="70" text-anchor="middle" font-size="9" fill="#6b7280">GMV</text>
+            </svg>
+            <div class="donut-legend">
+              <div class="legend-item"><div class="legend-dot" style="background:#ff9900"></div><span style="flex:1">Laptops</span><strong>45%</strong></div>
+              <div class="legend-item"><div class="legend-dot" style="background:#007185"></div><span style="flex:1">Mobiles</span><strong>27%</strong></div>
+              <div class="legend-item"><div class="legend-dot" style="background:#067d62"></div><span style="flex:1">Audio</span><strong>16%</strong></div>
+              <div class="legend-item"><div class="legend-dot" style="background:#ddd"></div><span style="flex:1">Others</span><strong>12%</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RECENT ACTIVITY -->
+      <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;margin-bottom:12px">Recent Activity</div>
+      <div class="activity-list">
+        <div class="activity-item"><div class="activity-icon">📦</div><div class="activity-body"><div class="activity-title">New order: #SN-2026-03284819</div><div class="activity-sub">Apple MacBook Air M2 × 1 — ₹94,900 · Rahul Kumar, Chennai</div></div><div class="activity-time">2 mins ago</div></div>
+        <div class="activity-item"><div class="activity-icon">⭐</div><div class="activity-body"><div class="activity-title">New 5-star review received</div><div class="activity-sub">Sony WH-1000XM5 — "Absolutely worth every rupee!" by Priya S.</div></div><div class="activity-time">34 mins ago</div></div>
+        <div class="activity-item"><div class="activity-icon">⚠️</div><div class="activity-body"><div class="activity-title">Low stock alert: Logitech MX Master 3S</div><div class="activity-sub">Only 3 units remaining. Consider restocking soon.</div></div><div class="activity-time">1 hour ago</div></div>
+        <div class="activity-item"><div class="activity-icon">💰</div><div class="activity-body"><div class="activity-title">Payment disbursed: ₹1,24,300</div><div class="activity-sub">Transferred to HDFC Business Account ending 7712</div></div><div class="activity-time">3 hours ago</div></div>
+      </div>
+    </div>
+
+    <!-- ORDERS -->
+    <div class="panel" id="panel-orders">
+      <div class="page-header">
+        <div><div class="page-title">Orders</div><div class="page-sub">Manage and fulfil customer orders</div></div>
+        <div class="header-actions"><button class="btn btn-secondary">📥 Export CSV</button></div>
+      </div>
+      <div class="order-flow">
+        <div class="flow-item"><div class="flow-icon">🆕</div><div class="flow-num" style="color:var(--orange)">12</div><div class="flow-label">New Orders</div></div>
+        <div class="flow-item"><div class="flow-icon">📦</div><div class="flow-num" style="color:var(--blue)">34</div><div class="flow-label">Processing</div></div>
+        <div class="flow-item"><div class="flow-icon">🚚</div><div class="flow-num" style="color:#7b1fa2">28</div><div class="flow-label">Shipped</div></div>
+        <div class="flow-item"><div class="flow-icon">✅</div><div class="flow-num" style="color:var(--green)">763</div><div class="flow-label">Delivered</div></div>
+        <div class="flow-item"><div class="flow-icon">🔄</div><div class="flow-num" style="color:var(--red)">10</div><div class="flow-label">Returns</div></div>
+      </div>
+      <div class="table-card">
+        <div class="table-header"><div class="table-title">All Orders</div><input class="table-search" type="text" placeholder="🔍 Search order ID, product…" /></div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Order ID</th><th>Product</th><th>Customer</th><th>Date</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td><strong>#SN-284819</strong></td><td><div class="product-cell"><div class="product-cell-img">💻</div><div><div class="product-cell-name">MacBook Air M2</div><div class="product-cell-sku">SKU: APL-MBA15-MN</div></div></div></td><td>Rahul Kumar<br><span style="font-size:11px;color:var(--muted)">Chennai</span></td><td style="font-size:12px">28 Mar 2026</td><td><strong>₹94,900</strong></td><td><span class="status-pill pill-blue">Shipped</span></td><td><div style="display:flex;gap:4px"><button class="action-btn-sm primary" onclick="showToast('Order details opened')">View</button><button class="action-btn-sm" onclick="showToast('Invoice generated')">Invoice</button></div></td></tr>
+              <tr><td><strong>#SN-284790</strong></td><td><div class="product-cell"><div class="product-cell-img">🎧</div><div><div class="product-cell-name">Sony XM5</div><div class="product-cell-sku">SKU: SON-WH1000XM5</div></div></div></td><td>Priya Sharma<br><span style="font-size:11px;color:var(--muted)">Mumbai</span></td><td style="font-size:12px">28 Mar 2026</td><td><strong>₹24,990</strong></td><td><span class="status-pill pill-orange">Processing</span></td><td><div style="display:flex;gap:4px"><button class="action-btn-sm primary" onclick="showToast('Order details opened')">View</button><button class="action-btn-sm" onclick="showToast('Marked as shipped!')">Ship</button></div></td></tr>
+              <tr><td><strong>#SN-284612</strong></td><td><div class="product-cell"><div class="product-cell-img">🖱️</div><div><div class="product-cell-name">Logitech MX3S</div><div class="product-cell-sku">SKU: LOG-MXM3S-GR</div></div></div></td><td>Arjun Menon<br><span style="font-size:11px;color:var(--muted)">Bangalore</span></td><td style="font-size:12px">27 Mar 2026</td><td><strong>₹8,995</strong></td><td><span class="status-pill pill-green">Delivered</span></td><td><div style="display:flex;gap:4px"><button class="action-btn-sm" onclick="showToast('Order viewed')">View</button></div></td></tr>
+              <tr><td><strong>#SN-284499</strong></td><td><div class="product-cell"><div class="product-cell-img">📱</div><div><div class="product-cell-name">Samsung S24 Ultra</div><div class="product-cell-sku">SKU: SAM-S24U-256</div></div></div></td><td>Divya Venkat<br><span style="font-size:11px;color:var(--muted)">Hyderabad</span></td><td style="font-size:12px">26 Mar 2026</td><td><strong>₹1,09,999</strong></td><td><span class="status-pill pill-red">Return Req.</span></td><td><div style="display:flex;gap:4px"><button class="action-btn-sm" onclick="showToast('Return approved')">Approve</button><button class="action-btn-sm" style="color:var(--red)" onclick="showToast('Return rejected')">Reject</button></div></td></tr>
+              <tr><td><strong>#SN-284301</strong></td><td><div class="product-cell"><div class="product-cell-img">🔊</div><div><div class="product-cell-name">JBL Charge 5</div><div class="product-cell-sku">SKU: JBL-CHG5-BLK</div></div></div></td><td>Karan Joshi<br><span style="font-size:11px;color:var(--muted)">Delhi</span></td><td style="font-size:12px">25 Mar 2026</td><td><strong>₹8,499</strong></td><td><span class="status-pill pill-green">Delivered</span></td><td><div style="display:flex;gap:4px"><button class="action-btn-sm" onclick="showToast('Order viewed')">View</button></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- INVENTORY -->
+    <div class="panel" id="panel-inventory">
+      <div class="page-header">
+        <div><div class="page-title">Inventory</div><div class="page-sub">Track stock levels and reorder points</div></div>
+        <div class="header-actions"><button class="btn btn-secondary">📥 Export</button><button class="btn btn-primary" onclick="showToast('Add stock form opening...')">+ Add Stock</button></div>
+      </div>
+      <div class="metrics-grid" style="grid-template-columns:repeat(4,1fr)">
+        <div class="metric-card green"><div class="metric-label">Total SKUs</div><div class="metric-value" style="font-size:24px">142</div></div>
+        <div class="metric-card orange"><div class="metric-label">Low Stock</div><div class="metric-value" style="font-size:24px;color:var(--orange)">3</div></div>
+        <div class="metric-card red"><div class="metric-label">Out of Stock</div><div class="metric-value" style="font-size:24px;color:var(--red)">1</div></div>
+        <div class="metric-card blue"><div class="metric-label">Inventory Value</div><div class="metric-value" style="font-size:24px">₹82L</div></div>
+      </div>
+      <div class="table-card">
+        <div class="table-header"><div class="table-title">Stock Levels</div><input class="table-search" type="text" placeholder="🔍 Search product, SKU…" /></div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Product</th><th>SKU</th><th>Stock</th><th>Sold (30d)</th><th>Price</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td><div class="product-cell"><div class="product-cell-img">💻</div><div class="product-cell-name">MacBook Air M2 15"</div></div></td><td style="font-size:12px;color:var(--muted)">APL-MBA15-MN</td><td><span class="stock-bar"><span class="stock-fill" style="width:80%;background:var(--green)"></span></span><strong>24</strong></td><td>18</td><td>₹94,900</td><td><span class="status-pill pill-green">In Stock</span></td><td><button class="action-btn-sm" onclick="showToast('Edit product')">Edit</button></td></tr>
+              <tr><td><div class="product-cell"><div class="product-cell-img">🎧</div><div class="product-cell-name">Sony WH-1000XM5</div></div></td><td style="font-size:12px;color:var(--muted)">SON-WH1000XM5</td><td><span class="stock-bar"><span class="stock-fill" style="width:60%;background:var(--blue)"></span></span><strong>15</strong></td><td>32</td><td>₹24,990</td><td><span class="status-pill pill-green">In Stock</span></td><td><button class="action-btn-sm" onclick="showToast('Edit product')">Edit</button></td></tr>
+              <tr><td><div class="product-cell"><div class="product-cell-img">🖱️</div><div class="product-cell-name">Logitech MX Master 3S</div></div></td><td style="font-size:12px;color:var(--muted)">LOG-MXM3S-GR</td><td><span class="stock-bar"><span class="stock-fill" style="width:15%;background:var(--orange)"></span></span><strong>3</strong></td><td>28</td><td>₹8,995</td><td><span class="status-pill pill-orange">Low Stock</span></td><td><button class="action-btn-sm primary" onclick="showToast('Reorder placed!')">Reorder</button></td></tr>
+              <tr><td><div class="product-cell"><div class="product-cell-img">📱</div><div class="product-cell-name">Samsung Galaxy S24 Ultra</div></div></td><td style="font-size:12px;color:var(--muted)">SAM-S24U-256</td><td><span class="stock-bar"><span class="stock-fill" style="width:5%;background:var(--red)"></span></span><strong>1</strong></td><td>41</td><td>₹1,09,999</td><td><span class="status-pill pill-red">Critical</span></td><td><button class="action-btn-sm primary" onclick="showToast('Urgent reorder placed!')">Urgent Reorder</button></td></tr>
+              <tr><td><div class="product-cell"><div class="product-cell-img">🔊</div><div class="product-cell-name">JBL Charge 5</div></div></td><td style="font-size:12px;color:var(--muted)">JBL-CHG5-BLK</td><td><span class="stock-bar"><span class="stock-fill" style="width:0%;background:var(--red)"></span></span><strong>0</strong></td><td>14</td><td>₹8,499</td><td><span class="status-pill pill-red">Out of Stock</span></td><td><button class="action-btn-sm primary" onclick="showToast('Restock initiated!')">Restock</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <div class="panel" id="panel-products">
+      <div class="page-header">
+        <div><div class="page-title">Products</div><div class="page-sub">142 active listings</div></div>
+        <div class="header-actions"><button class="btn btn-secondary">📥 Export</button><button class="btn btn-primary" onclick="showToast('New product form opening...')">+ Add New Product</button></div>
+      </div>
+      <div class="table-card">
+        <div class="table-header"><div class="table-title">All Listings</div><input class="table-search" type="text" placeholder="🔍 Search products…" /></div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Product</th><th>Price</th><th>Category</th><th>Rating</th><th>Stock</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td><div class="product-cell"><div class="product-cell-img">💻</div><div><div class="product-cell-name">MacBook Air M2 15" Midnight</div><div class="product-cell-sku">APL-MBA15-MN</div></div></div></td><td>₹94,900</td><td>Laptops</td><td><span style="color:var(--orange)">★</span> 4.8 (12.8K)</td><td>24</td><td><span class="status-pill pill-green">Active</span></td><td><div style="display:flex;gap:4px"><button class="action-btn-sm" onclick="location.href='product-detail.html'">Preview</button><button class="action-btn-sm" onclick="showToast('Edit product')">Edit</button></div></td></tr>
+              <tr><td><div class="product-cell"><div class="product-cell-img">🎧</div><div><div class="product-cell-name">Sony WH-1000XM5 Black</div><div class="product-cell-sku">SON-WH1000XM5</div></div></div></td><td>₹24,990</td><td>Audio</td><td><span style="color:var(--orange)">★</span> 4.9 (23K)</td><td>15</td><td><span class="status-pill pill-green">Active</span></td><td><div style="display:flex;gap:4px"><button class="action-btn-sm" onclick="showToast('Editing...')">Edit</button><button class="action-btn-sm" style="color:var(--red)" onclick="showToast('Listing paused')">Pause</button></div></td></tr>
+              <tr><td><div class="product-cell"><div class="product-cell-img">🖱️</div><div><div class="product-cell-name">Logitech MX Master 3S</div><div class="product-cell-sku">LOG-MXM3S-GR</div></div></div></td><td>₹8,995</td><td>Accessories</td><td><span style="color:var(--orange)">★</span> 4.8 (19.8K)</td><td>3</td><td><span class="status-pill pill-orange">Low Stock</span></td><td><div style="display:flex;gap:4px"><button class="action-btn-sm" onclick="showToast('Editing...')">Edit</button><button class="action-btn-sm primary" onclick="showToast('Reorder placed!')">Reorder</button></div></td></tr>
+              <tr><td><div class="product-cell"><div class="product-cell-img">📱</div><div><div class="product-cell-name">Samsung Galaxy S24 Ultra</div><div class="product-cell-sku">SAM-S24U-256</div></div></div></td><td>₹1,09,999</td><td>Mobiles</td><td><span style="color:var(--orange)">★</span> 4.7 (9.2K)</td><td>1</td><td><span class="status-pill pill-red">Critical</span></td><td><div style="display:flex;gap:4px"><button class="action-btn-sm" onclick="showToast('Editing...')">Edit</button></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ANALYTICS -->
+    <div class="panel" id="panel-analytics">
+      <div class="page-header"><div><div class="page-title">Analytics</div><div class="page-sub">Performance metrics for your store</div></div><div class="header-actions"><select class="btn btn-secondary" style="font-size:13px"><option>Last 30 days</option><option>Last 90 days</option><option>This year</option></select></div></div>
+      <div class="metrics-grid">
+        <div class="metric-card green"><div class="metric-label">Conversion Rate</div><div class="metric-value" style="font-size:24px">3.2%</div><div class="metric-change up">↑ 0.4% vs last month</div></div>
+        <div class="metric-card orange"><div class="metric-label">Avg. Order Value</div><div class="metric-value" style="font-size:24px">₹5,698</div><div class="metric-change up">↑ ₹340 vs last month</div></div>
+        <div class="metric-card blue"><div class="metric-label">Customer Satisfaction</div><div class="metric-value" style="font-size:24px">4.7★</div><div class="metric-change up">↑ 0.1 vs last month</div></div>
+        <div class="metric-card red"><div class="metric-label">Cancelled Orders</div><div class="metric-value" style="font-size:24px">1.8%</div><div class="metric-change down">↑ 0.2% — investigate</div></div>
+      </div>
+      <div class="chart-card" style="margin-bottom:16px">
+        <div class="chart-title">Revenue Trend — Last 30 Days</div>
+        <div class="chart-sub">Daily revenue in ₹</div>
+        <div class="bar-chart" id="analyticsChart"></div>
+      </div>
+    </div>
+
+    <!-- REVIEWS -->
+    <div class="panel" id="panel-reviews">
+      <div class="page-header"><div><div class="page-title">Reviews</div><div class="page-sub">Monitor and respond to customer feedback</div></div></div>
+      <div class="metrics-grid" style="grid-template-columns:repeat(4,1fr)">
+        <div class="metric-card green"><div class="metric-label">Overall Rating</div><div class="metric-value" style="font-size:24px">4.7★</div></div>
+        <div class="metric-card orange"><div class="metric-label">Total Reviews</div><div class="metric-value" style="font-size:24px">3,482</div></div>
+        <div class="metric-card blue"><div class="metric-label">Pending Response</div><div class="metric-value" style="font-size:24px;color:var(--blue)">7</div></div>
+        <div class="metric-card red"><div class="metric-label">1-2 Star Reviews</div><div class="metric-value" style="font-size:24px;color:var(--red)">42</div></div>
+      </div>
+      <div class="table-card">
+        <div class="table-header"><div class="table-title">Recent Reviews</div></div>
+        <div style="display:flex;flex-direction:column;gap:0">
+          <div style="padding:16px;border-bottom:1px solid var(--gray2)"><div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px"><div><div style="font-size:14px;font-weight:600">Rahul Kumar</div><div style="color:var(--orange);font-size:14px;margin:3px 0">★★★★★</div><div style="font-size:13px;font-weight:600;margin-bottom:4px">"Absolutely worth every rupee!"</div><div style="font-size:13px;color:var(--muted)">MacBook Air M2 · Mar 28, 2026</div></div><span class="status-pill pill-blue">Verified Purchase</span></div><div style="font-size:13px;color:var(--muted);margin-top:6px">The M2 chip is a beast — everything flies. Battery genuinely lasts all day.</div><div style="margin-top:8px"><button class="action-btn-sm primary" onclick="showToast('Reply form opened')">Reply to Review</button></div></div>
+          <div style="padding:16px;border-bottom:1px solid var(--gray2)"><div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px"><div><div style="font-size:14px;font-weight:600">Priya Sharma</div><div style="color:var(--orange);font-size:14px;margin:3px 0">★★★★★</div><div style="font-size:13px;font-weight:600;margin-bottom:4px">"Best laptop I've ever owned"</div><div style="font-size:13px;color:var(--muted)">MacBook Air M2 · Feb 14, 2026</div></div><span class="status-pill pill-green">Responded</span></div><div style="font-size:13px;color:var(--muted);margin-top:6px">Switched from Windows and never looking back. Display is gorgeous.</div></div>
+          <div style="padding:16px"><div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px"><div><div style="font-size:14px;font-weight:600">Anonymous User</div><div style="color:var(--orange);font-size:14px;margin:3px 0">★★☆☆☆</div><div style="font-size:13px;font-weight:600;margin-bottom:4px">"Delivery was delayed by 2 days"</div><div style="font-size:13px;color:var(--muted)">JBL Charge 5 · Mar 20, 2026</div></div><span class="status-pill pill-red">Needs Response</span></div><div style="font-size:13px;color:var(--muted);margin-top:6px">Product is fine but expected delivery on time as promised.</div><div style="margin-top:8px"><button class="action-btn-sm primary" onclick="showToast('Reply form opened')">Reply to Review</button></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAYMENTS -->
+    <div class="panel" id="panel-payments">
+      <div class="page-header"><div><div class="page-title">Payments</div><div class="page-sub">Track earnings and disbursements</div></div></div>
+      <div class="metrics-grid">
+        <div class="metric-card green"><div class="metric-label">Available Balance</div><div class="metric-value">₹82,430</div><div style="margin-top:8px"><button class="btn btn-green" onclick="showToast('Withdrawal initiated!')">Withdraw</button></div></div>
+        <div class="metric-card orange"><div class="metric-label">Pending Settlement</div><div class="metric-value">₹1,24,300</div><div class="metric-change" style="color:var(--muted)">Clears in 3 business days</div></div>
+        <div class="metric-card blue"><div class="metric-label">Lifetime Earnings</div><div class="metric-value">₹48.2L</div><div class="metric-change up">↑ 22% vs last year</div></div>
+        <div class="metric-card red"><div class="metric-label">Pending Refunds</div><div class="metric-value" style="font-size:22px">₹12,890</div><div class="metric-change down">2 active return cases</div></div>
+      </div>
+      <div class="table-card">
+        <div class="table-header"><div class="table-title">Transaction History</div><button class="btn btn-secondary" onclick="showToast('Statement downloaded!')">📥 Download Statement</button></div>
+        <div style="overflow-x:auto"><table>
+          <thead><tr><th>Date</th><th>Description</th><th>Orders</th><th>Gross</th><th>Fees</th><th>Net</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td style="font-size:12px">28 Mar 2026</td><td>Settlement — Week 13</td><td>47</td><td>₹1,82,400</td><td>-₹9,120</td><td><strong>₹1,73,280</strong></td><td><span class="status-pill pill-orange">Pending</span></td></tr>
+            <tr><td style="font-size:12px">21 Mar 2026</td><td>Settlement — Week 12</td><td>52</td><td>₹2,14,600</td><td>-₹10,730</td><td><strong>₹2,03,870</strong></td><td><span class="status-pill pill-green">Paid</span></td></tr>
+            <tr><td style="font-size:12px">14 Mar 2026</td><td>Settlement — Week 11</td><td>38</td><td>₹1,48,200</td><td>-₹7,410</td><td><strong>₹1,40,790</strong></td><td><span class="status-pill pill-green">Paid</span></td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- REPORTS -->
+    <div class="panel" id="panel-reports">
+      <div class="page-header"><div><div class="page-title">Reports</div><div class="page-sub">Download detailed business reports</div></div></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+        <div class="table-card" style="padding:20px;cursor:pointer" onclick="showToast('Sales Report generating...')"><div style="font-size:32px;margin-bottom:10px">📊</div><div style="font-family:'Sora',sans-serif;font-weight:700;margin-bottom:4px">Sales Report</div><div style="font-size:13px;color:var(--muted)">Order volumes, revenue, and trends</div><button class="btn btn-primary" style="margin-top:12px;width:100%">Download</button></div>
+        <div class="table-card" style="padding:20px;cursor:pointer" onclick="showToast('Inventory Report generating...')"><div style="font-size:32px;margin-bottom:10px">🗃️</div><div style="font-family:'Sora',sans-serif;font-weight:700;margin-bottom:4px">Inventory Report</div><div style="font-size:13px;color:var(--muted)">Stock levels, turnover, and reorders</div><button class="btn btn-primary" style="margin-top:12px;width:100%">Download</button></div>
+        <div class="table-card" style="padding:20px;cursor:pointer" onclick="showToast('Financial Report generating...')"><div style="font-size:32px;margin-bottom:10px">💰</div><div style="font-family:'Sora',sans-serif;font-weight:700;margin-bottom:4px">Financial Report</div><div style="font-size:13px;color:var(--muted)">Earnings, fees, and disbursements</div><button class="btn btn-primary" style="margin-top:12px;width:100%">Download</button></div>
+        <div class="table-card" style="padding:20px;cursor:pointer" onclick="showToast('Customer Report generating...')"><div style="font-size:32px;margin-bottom:10px">👥</div><div style="font-family:'Sora',sans-serif;font-weight:700;margin-bottom:4px">Customer Report</div><div style="font-size:13px;color:var(--muted)">Demographics, repeat buyers, CLV</div><button class="btn btn-primary" style="margin-top:12px;width:100%">Download</button></div>
+        <div class="table-card" style="padding:20px;cursor:pointer" onclick="showToast('Return Report generating...')"><div style="font-size:32px;margin-bottom:10px">🔄</div><div style="font-family:'Sora',sans-serif;font-weight:700;margin-bottom:4px">Returns Report</div><div style="font-size:13px;color:var(--muted)">Return reasons, rates by SKU</div><button class="btn btn-primary" style="margin-top:12px;width:100%">Download</button></div>
+        <div class="table-card" style="padding:20px;cursor:pointer" onclick="showToast('Ad Report generating...')"><div style="font-size:32px;margin-bottom:10px">📣</div><div style="font-family:'Sora',sans-serif;font-weight:700;margin-bottom:4px">Advertising Report</div><div style="font-size:13px;color:var(--muted)">ROAS, impressions, click-through</div><button class="btn btn-primary" style="margin-top:12px;width:100%">Download</button></div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="panel" id="panel-settings">
+      <div class="page-header"><div><div class="page-title">Store Settings</div><div class="page-sub">Configure your seller account and preferences</div></div><div class="header-actions"><button class="btn btn-primary" onclick="showToast('✅ Settings saved!')">Save Changes</button></div></div>
+      <div class="table-card" style="padding:20px;margin-bottom:16px">
+        <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;margin-bottom:14px">Business Information</div>
+        <div class="settings-grid">
+          <div class="form-group"><label class="form-label">Business Name</label><input class="form-input" value="TechZone India Pvt Ltd" /></div>
+          <div class="form-group"><label class="form-label">Display Name (Store)</label><input class="form-input" value="TechZone Official Store" /></div>
+          <div class="form-group"><label class="form-label">GST Number</label><input class="form-input" value="29AABCT1234M1Z5" /></div>
+          <div class="form-group"><label class="form-label">PAN Number</label><input class="form-input" value="AABCT1234M" /></div>
+          <div class="form-group span2"><label class="form-label">Business Address</label><textarea class="form-textarea">12, Industrial Estate, Phase 2, Guindy, Chennai – 600 032</textarea></div>
+        </div>
+      </div>
+      <div class="table-card" style="padding:20px">
+        <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;margin-bottom:4px">Notifications & Alerts</div>
+        <div class="toggle-row"><div><div style="font-size:14px;font-weight:600">New Order Alerts</div><div style="font-size:12px;color:var(--muted)">Get notified instantly when you receive an order</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+        <div class="toggle-row"><div><div style="font-size:14px;font-weight:600">Low Stock Warnings</div><div style="font-size:12px;color:var(--muted)">Alert when stock falls below reorder point</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+        <div class="toggle-row"><div><div style="font-size:14px;font-weight:600">Review Notifications</div><div style="font-size:12px;color:var(--muted)">Be notified of new customer reviews</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+        <div class="toggle-row"><div><div style="font-size:14px;font-weight:600">Payment Disbursements</div><div style="font-size:12px;color:var(--muted)">Notify me when settlements are transferred</div></div><button class="toggle" onclick="this.classList.toggle('on')"></button></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function switchPanel(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  event && event.currentTarget && event.currentTarget.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (id === 'overview' || id === 'analytics') setTimeout(drawCharts, 100);
+}
+
+function drawCharts() {
+  const data = [42000, 67000, 51000, 89000, 73000, 95000, 82000];
+  const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const colors = ['#007185','#007185','#007185','#ff9900','#007185','#ff9900','#007185'];
+  ['revenueChart','analyticsChart'].forEach(chartId => {
+    const el = document.getElementById(chartId);
+    if (!el) return;
+    const max = Math.max(...data);
+    el.innerHTML = data.map((v, i) => `
+      <div class="bar-col">
+        <div class="bar" style="height:${Math.round(v/max*110)+10}px;background:${colors[i]};min-height:10px;" title="₹${v.toLocaleString()}">
+          <span class="bar-val">₹${Math.round(v/1000)}K</span>
+        </div>
+        <span class="bar-label">${days[i]}</span>
+      </div>
+    `).join('');
+  });
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+drawCharts();
+</script>
+</body>
+</html>
